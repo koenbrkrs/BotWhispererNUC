@@ -1,12 +1,64 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import { GamePhase, Comment, GameConfig, GameResults } from '@/types/game';
+import { SetupPhase } from '@/components/game/SetupPhase';
+import { HandoffModal } from '@/components/game/HandoffModal';
+import { GamePhase as PlayingPhase } from '@/components/game/GamePhase';
+import { RevealPhase } from '@/components/game/RevealPhase';
 
 const Index = () => {
+  const [phase, setPhase] = useState<GamePhase>('setup');
+  const [config, setConfig] = useState<GameConfig | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [results, setResults] = useState<GameResults | null>(null);
+
+  const handleSetupComplete = (gameConfig: GameConfig, gameComments: Comment[]) => {
+    setConfig(gameConfig);
+    setComments(gameComments);
+    setPhase('handoff');
+  };
+
+  const handleHandoffContinue = () => {
+    setPhase('playing');
+  };
+
+  const handleGameComplete = (gameResults: GameResults) => {
+    setResults(gameResults);
+    setPhase('reveal');
+  };
+
+  const handlePlayAgain = () => {
+    setPhase('setup');
+    setConfig(null);
+    setComments([]);
+    setResults(null);
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      {phase === 'setup' && (
+        <SetupPhase onComplete={handleSetupComplete} />
+      )}
+
+      {phase === 'handoff' && (
+        <HandoffModal onContinue={handleHandoffContinue} />
+      )}
+
+      {phase === 'playing' && config && (
+        <PlayingPhase
+          topic={config.topic}
+          comments={comments}
+          onComplete={handleGameComplete}
+        />
+      )}
+
+      {phase === 'reveal' && config && results && (
+        <RevealPhase
+          config={config}
+          comments={comments}
+          results={results}
+          onPlayAgain={handlePlayAgain}
+        />
+      )}
     </div>
   );
 };
