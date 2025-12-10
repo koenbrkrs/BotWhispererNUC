@@ -5,7 +5,7 @@ import { VideoPlayer } from '../youtube/VideoPlayer';
 import { VideoInfo } from '../youtube/VideoInfo';
 import { RecommendedVideos } from '../youtube/RecommendedVideos';
 import { CommentsSection } from '../youtube/CommentsSection';
-import { MoreVideosGrid } from '../youtube/MoreVideosGrid';
+
 import { Timer } from './Timer';
 
 interface YouTubeGamePhaseProps {
@@ -92,8 +92,6 @@ export const YouTubeGamePhase = ({ topic, comments, onComplete }: YouTubeGamePha
               correctGuesses={correctGuesses}
               incorrectGuesses={incorrectGuesses}
             />
-            
-            <MoreVideosGrid />
           </div>
           
           {/* Sidebar */}

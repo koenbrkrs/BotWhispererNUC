@@ -4,7 +4,7 @@ import { VideoPlayer } from '../youtube/VideoPlayer';
 import { VideoInfo } from '../youtube/VideoInfo';
 import { RecommendedVideos } from '../youtube/RecommendedVideos';
 import { CommentsSection } from '../youtube/CommentsSection';
-import { MoreVideosGrid } from '../youtube/MoreVideosGrid';
+
 import { Bot, Trophy, Clock, Target, XCircle, CheckCircle, RotateCcw, Sparkles, MessageSquare, Zap } from 'lucide-react';
 
 interface YouTubeRevealPhaseProps {
@@ -129,8 +129,6 @@ export const YouTubeRevealPhase = ({ config, comments, results, onPlayAgain }: Y
                 mode="reveal"
               />
             </div>
-            
-            <MoreVideosGrid />
           </div>
           
           {/* Sidebar */}
