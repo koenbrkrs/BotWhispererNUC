@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { GamePhase, Comment, GameConfig, GameResults } from '@/types/game';
-import { SetupPhase } from '@/components/game/SetupPhase';
-import { HandoffModal } from '@/components/game/HandoffModal';
-import { GamePhase as PlayingPhase } from '@/components/game/GamePhase';
-import { RevealPhase } from '@/components/game/RevealPhase';
+import { YouTubeSetupPhase } from '@/components/game/YouTubeSetupPhase';
+import { YouTubeHandoffModal } from '@/components/game/YouTubeHandoffModal';
+import { YouTubeGamePhase } from '@/components/game/YouTubeGamePhase';
+import { YouTubeRevealPhase } from '@/components/game/YouTubeRevealPhase';
 
 const Index = () => {
   const [phase, setPhase] = useState<GamePhase>('setup');
@@ -34,17 +34,20 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
       {phase === 'setup' && (
-        <SetupPhase onComplete={handleSetupComplete} />
+        <YouTubeSetupPhase onComplete={handleSetupComplete} />
       )}
 
-      {phase === 'handoff' && (
-        <HandoffModal onContinue={handleHandoffContinue} />
+      {phase === 'handoff' && config && (
+        <YouTubeHandoffModal 
+          onContinue={handleHandoffContinue} 
+          topic={config.topic}
+        />
       )}
 
       {phase === 'playing' && config && (
-        <PlayingPhase
+        <YouTubeGamePhase
           topic={config.topic}
           comments={comments}
           onComplete={handleGameComplete}
@@ -52,14 +55,14 @@ const Index = () => {
       )}
 
       {phase === 'reveal' && config && results && (
-        <RevealPhase
+        <YouTubeRevealPhase
           config={config}
           comments={comments}
           results={results}
           onPlayAgain={handlePlayAgain}
         />
       )}
-    </div>
+    </>
   );
 };
 
