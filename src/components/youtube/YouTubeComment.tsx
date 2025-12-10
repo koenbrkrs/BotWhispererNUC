@@ -1,6 +1,17 @@
 import { ThumbsUp, ThumbsDown, MoreVertical } from 'lucide-react';
 import { Comment } from '@/types/game';
 import { cn } from '@/lib/utils';
+import { useMemo } from 'react';
+
+// Generate a stable hash from string for consistent random numbers
+const hashCode = (str: string): number => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+};
 
 interface YouTubeCommentProps {
   comment: Comment;
@@ -23,6 +34,11 @@ export const YouTubeComment = ({
   onClick,
   onToggle,
 }: YouTubeCommentProps) => {
+  // Generate stable like count based on comment id
+  const likeCount = useMemo(() => {
+    return (hashCode(comment.id) % 500) + 1;
+  }, [comment.id]);
+
   if (isRemoved) {
     return null;
   }
@@ -102,7 +118,7 @@ export const YouTubeComment = ({
             <button className="p-1.5 hover:bg-yt-hover rounded-full transition-colors" onClick={(e) => e.stopPropagation()}>
               <ThumbsUp className="w-4 h-4 text-yt-text-secondary" />
             </button>
-            <span className="text-xs text-yt-text-secondary">{Math.floor(Math.random() * 500) + 1}</span>
+            <span className="text-xs text-yt-text-secondary">{likeCount}</span>
           </div>
           <button className="p-1.5 hover:bg-yt-hover rounded-full transition-colors" onClick={(e) => e.stopPropagation()}>
             <ThumbsDown className="w-4 h-4 text-yt-text-secondary" />

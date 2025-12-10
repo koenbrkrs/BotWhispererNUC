@@ -6,7 +6,7 @@ import { VideoPlayer } from '../youtube/VideoPlayer';
 import { VideoInfo } from '../youtube/VideoInfo';
 import { RecommendedVideos } from '../youtube/RecommendedVideos';
 import { CommentsSection } from '../youtube/CommentsSection';
-import { MoreVideosGrid } from '../youtube/MoreVideosGrid';
+
 import { X, Bot, Sparkles, Zap, MessageSquare, Lock, ArrowRight } from 'lucide-react';
 
 interface SetupPhaseProps {
@@ -100,14 +100,10 @@ export const YouTubeSetupPhase = ({ onComplete }: SetupPhaseProps) => {
             )}
             
             {step === 'config' && (
-              <CommentsSection
-                comments={[]}
-                mode="setup"
-                bottedCount={0}
-              />
+              <div className="mt-6 p-8 text-center text-yt-text-secondary">
+                <p>Click "Setup Game" above to configure the bot detection game</p>
+              </div>
             )}
-            
-            <MoreVideosGrid />
           </div>
           
           {/* Sidebar */}

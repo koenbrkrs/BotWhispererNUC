@@ -4,7 +4,7 @@ import { YouTubeLayout } from '../youtube/YouTubeLayout';
 import { VideoPlayer } from '../youtube/VideoPlayer';
 import { VideoInfo } from '../youtube/VideoInfo';
 import { RecommendedVideos } from '../youtube/RecommendedVideos';
-import { MoreVideosGrid } from '../youtube/MoreVideosGrid';
+
 
 interface YouTubeHandoffModalProps {
   onContinue: () => void;
@@ -26,7 +26,6 @@ export const YouTubeHandoffModal = ({ onContinue, topic }: YouTubeHandoffModalPr
           <div className="flex-1 min-w-0">
             <VideoPlayer />
             <VideoInfo title={videoTitle} />
-            <MoreVideosGrid />
           </div>
           
           {/* Sidebar */}
