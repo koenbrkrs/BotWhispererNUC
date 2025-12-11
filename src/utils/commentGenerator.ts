@@ -1,4 +1,4 @@
-import { Comment } from '@/types/game';
+import { Comment, OpinionConfig, StyleConfig } from '@/types/game';
 
 const usernames = [
   'TechWatcher42', 'DigitalNomad_X', 'CodeMaster99', 'ByteRunner', 'NetSurfer2024',
@@ -31,107 +31,95 @@ const humanCommentTemplates = [
   "I'm skeptical about some claims regarding {topic}, but open to evidence.",
 ];
 
-const getBotCommentsByStyle = (style: string, opinion: string, topic: string): string[] => {
-  const styleLower = style.toLowerCase();
-  
-  if (styleLower.includes('sarcastic') || styleLower.includes('dismissive')) {
-    return [
-      `Oh wow, another "expert" on ${topic}. How original. 🙄`,
-      `Sure, let's just ignore that ${opinion}. Because that's worked so well before.`,
-      `Imagine still not understanding that ${opinion}. Couldn't be me.`,
-      `*slow clap* Great point. Now let me explain why ${opinion} is actually right.`,
-      `I love how people pretend ${opinion} isn't obvious. Peak comedy.`,
-    ];
-  }
-  
-  if (styleLower.includes('logical') || styleLower.includes('bullet')) {
-    return [
-      `Let me break this down:\n1. ${opinion}\n2. The data supports this\n3. Opposing views lack evidence\n4. Therefore, the conclusion is clear.`,
-      `Factually speaking: ${opinion}. Here's why: empirical studies, statistical analysis, and expert consensus all align.`,
-      `Consider the following logic:\n- Premise A: ${topic} is relevant\n- Premise B: ${opinion}\n- Conclusion: This position is rationally superior.`,
-      `The evidence clearly indicates ${opinion}. Those disagreeing haven't examined the data objectively.`,
-      `Point by point rebuttal: Every argument against ${opinion} fails under scrutiny. Here's my analysis...`,
-    ];
-  }
-  
-  if (styleLower.includes('emotional') || styleLower.includes('dramatic')) {
-    return [
-      `I can't BELIEVE people still don't see that ${opinion}! This is literally SO important!! 😭`,
-      `This breaks my heart... ${opinion} and nobody seems to care anymore!!! 💔`,
-      `OMG YES FINALLY someone who gets it!!! ${opinion} has been my whole thing forever!!!`,
-      `I'm literally shaking... the fact that ${opinion} isn't obvious to everyone is devastating 😢`,
-      `THIS!!! A thousand times THIS!!! ${opinion} is what I've been SCREAMING about!!!`,
-    ];
-  }
-  
-  if (styleLower.includes('short') || styleLower.includes('meme')) {
-    return [
-      `${opinion}. Period. 💯`,
-      `This. So much this. ^^`,
-      `Based take: ${opinion}`,
-      `L + ratio + ${opinion}`,
-      `fr fr no cap ${opinion} is the only answer`,
-    ];
-  }
-  
-  if (styleLower.includes('spam') || styleLower.includes('one-line')) {
-    return [
-      `${opinion}`,
-      `Exactly right about ${topic}`,
-      `Finally someone said it`,
-      `${opinion} - spread the word`,
-      `Wake up people: ${opinion}`,
-    ];
-  }
-  
-  if (styleLower.includes('intellectual') || styleLower.includes('jargon')) {
-    return [
-      `From an epistemological standpoint, ${opinion} represents the optimal paradigm for understanding ${topic}.`,
-      `The dialectical synthesis here clearly points to ${opinion} as the most coherent framework.`,
-      `Applying systems thinking methodology, we can deduce that ${opinion} emerges as the logical conclusion.`,
-      `The hermeneutic analysis of ${topic} invariably leads to ${opinion} when examined rigorously.`,
-      `Meta-analytically speaking, the preponderance of evidence substantiates ${opinion}.`,
-    ];
-  }
-  
-  if (styleLower.includes('support') || styleLower.includes('agree')) {
-    return [
-      `Absolutely agree! ${opinion} is such an important perspective on ${topic}.`,
-      `You make such great points! ${opinion} is exactly what I've been saying!`,
-      `Love this discussion! ${opinion} really resonates with me.`,
-      `Couldn't have said it better myself. ${opinion} for the win!`,
-      `Thank you for sharing! ${opinion} is so underrated and needs more attention.`,
-    ];
+const generateBotComment = (
+  topic: string,
+  opinion: string,
+  opinionConfig: OpinionConfig,
+  styleConfig: StyleConfig
+): string => {
+  const parts: string[] = [];
+  const { stanceStrength, positivity, category } = opinionConfig;
+  const {
+    sarcasm, dismissiveness, logic, bulletPoints, emotionalIntensity,
+    dramaticFlair, postLength, memeStyle, pseudoIntellectual, jargonUsage,
+    supportiveness, agreeableness
+  } = styleConfig;
+
+  // Determine dominant traits (threshold: 60)
+  const isSarcastic = sarcasm > 60;
+  const isDismissive = dismissiveness > 60;
+  const isLogical = logic > 60;
+  const usesBullets = bulletPoints > 60;
+  const isEmotional = emotionalIntensity > 60;
+  const isDramatic = dramaticFlair > 60;
+  const isShort = postLength > 60;
+  const isMemeStyle = memeStyle > 60;
+  const isPseudoIntellectual = pseudoIntellectual > 60;
+  const usesJargon = jargonUsage > 60;
+  const isSupportive = supportiveness > 60;
+  const isAgreeable = agreeableness > 60;
+  const isStrong = stanceStrength > 60;
+  const isPositive = positivity > 60;
+
+  // Build opening based on traits
+  if (isSarcastic && isDismissive) {
+    parts.push(`Oh wow, another "expert" on ${topic}. 🙄`);
+  } else if (isEmotional && isDramatic) {
+    parts.push(`I can't BELIEVE people still don't get this!!!`);
+  } else if (isMemeStyle && isShort) {
+    parts.push(`Based.`);
+  } else if (isPseudoIntellectual && usesJargon) {
+    parts.push(`From an epistemological standpoint,`);
+  } else if (isSupportive && isAgreeable) {
+    parts.push(`Absolutely love this discussion!`);
+  } else if (isLogical) {
+    parts.push(`Let me break this down objectively:`);
   }
 
-  if (styleLower.includes('critical') || styleLower.includes('negative')) {
-    return [
-      `Wrong. ${opinion} is the only sensible position here and you're all missing it.`,
-      `Classic case of not understanding ${topic}. ${opinion}, obviously.`,
-      `Everyone here is ignoring that ${opinion}. Do your research.`,
-      `Tired of seeing bad takes on ${topic}. ${opinion} is clearly correct.`,
-      `How many times do we have to explain that ${opinion}? Read some actual sources.`,
-    ];
+  // Build opinion statement based on stance
+  const stanceWord = category === 'pro' || category === 'agree' || category === 'support' 
+    ? (isPositive ? 'strongly support' : 'support')
+    : (isPositive ? 'disagree with' : 'strongly oppose');
+
+  if (usesBullets && isLogical) {
+    parts.push(`\n1. ${opinion}\n2. The evidence supports this\n3. Opposing views lack merit`);
+  } else if (isEmotional && isDramatic) {
+    const emojis = isPositive ? '💯😤🔥' : '😭💔😢';
+    parts.push(`${opinion}!!! ${emojis.slice(0, Math.ceil(emotionalIntensity / 35))}`);
+  } else if (isMemeStyle) {
+    const memeIntros = ['fr fr', 'no cap', 'lowkey', 'ngl'];
+    parts.push(`${memeIntros[Math.floor(Math.random() * memeIntros.length)]} ${opinion}`);
+  } else if (isPseudoIntellectual) {
+    const jargonTerms = ['paradigm', 'framework', 'dialectic', 'synthesis', 'epistemology'];
+    const term = jargonTerms[Math.floor(Math.random() * jargonTerms.length)];
+    parts.push(`the ${term} clearly indicates that ${opinion}`);
+  } else if (isSarcastic) {
+    parts.push(`Sure, let's just ignore that ${opinion}. Because that's worked so well. 🙄`);
+  } else {
+    parts.push(`${opinion}.`);
   }
 
-  if (styleLower.includes('conspir')) {
-    return [
-      `They don't want you to know that ${opinion}. Follow the money... 👀`,
-      `Wake up sheeple! ${opinion} is being suppressed by the mainstream narrative.`,
-      `Interesting how nobody's talking about ${opinion}... almost like it's being censored 🤔`,
-      `Do your own research on ${topic}. You'll find that ${opinion} is what they're hiding.`,
-      `Connect the dots people. ${opinion}. They can't silence us forever.`,
-    ];
+  // Add closing based on traits
+  if (isDismissive && isStrong) {
+    parts.push(`Anyone disagreeing clearly hasn't done their research.`);
+  } else if (isSupportive && isAgreeable) {
+    parts.push(`Love seeing others who understand this! 💪`);
+  } else if (isLogical && !isEmotional) {
+    parts.push(`The data speaks for itself.`);
+  } else if (isDramatic) {
+    parts.push(`This is literally the most important issue of our time!!!`);
   }
-  
-  // Default: generic bot comments
-  return [
-    `The reality is ${opinion}. Anyone paying attention to ${topic} knows this.`,
-    `People need to understand: ${opinion}. It's not that complicated.`,
-    `${opinion} - this should be common knowledge by now regarding ${topic}.`,
-    `I've researched ${topic} extensively. ${opinion} is the correct take.`,
-    `Every informed person knows ${opinion}. The evidence is overwhelming.`,
-  ];
+
+  // Shorten if high postLength
+  let result = parts.join(' ');
+  if (isShort && result.length > 80) {
+    result = parts[1] || parts[0]; // Just use the opinion part
+    if (isMemeStyle) {
+      result = `${opinion}. Period. 💯`;
+    }
+  }
+
+  return result;
 };
 
 const shuffleArray = <T>(array: T[]): T[] => {
@@ -147,17 +135,44 @@ export const generateComments = (
   topic: string,
   botOpinion: string,
   botStyle: string,
-  count: number = 20
+  count: number = 20,
+  opinionConfig?: OpinionConfig,
+  styleConfig?: StyleConfig
 ): Comment[] => {
-  const botComments = getBotCommentsByStyle(botStyle, botOpinion, topic);
   const humanComments = humanCommentTemplates.map(t => t.replace('{topic}', topic));
   
   const shuffledUsernames = shuffleArray(usernames);
   const shuffledTimestamps = shuffleArray(timestamps);
   
   const comments: Comment[] = [];
-  const botCount = Math.floor(count * 0.4); // ~40% bots
+  const botCount = Math.floor(count * 0.4);
   const humanCount = count - botCount;
+
+  // Default configs if not provided (for backwards compatibility)
+  const defaultOpinionConfig: OpinionConfig = {
+    stanceStrength: 70,
+    positivity: 50,
+    category: 'pro',
+    theme: 'tech'
+  };
+
+  const defaultStyleConfig: StyleConfig = {
+    sarcasm: 50,
+    dismissiveness: 30,
+    logic: 50,
+    bulletPoints: 20,
+    emotionalIntensity: 40,
+    dramaticFlair: 30,
+    postLength: 50,
+    memeStyle: 20,
+    pseudoIntellectual: 30,
+    jargonUsage: 20,
+    supportiveness: 40,
+    agreeableness: 40
+  };
+
+  const finalOpinionConfig = opinionConfig || defaultOpinionConfig;
+  const finalStyleConfig = styleConfig || defaultStyleConfig;
   
   // Generate human comments
   for (let i = 0; i < humanCount; i++) {
@@ -171,15 +186,24 @@ export const generateComments = (
     });
   }
   
-  // Generate bot comments
+  // Generate bot comments with varied slider values
   for (let i = 0; i < botCount; i++) {
+    // Add slight variation to each bot comment
+    const variedStyleConfig = { ...finalStyleConfig };
+    Object.keys(variedStyleConfig).forEach(key => {
+      const k = key as keyof StyleConfig;
+      variedStyleConfig[k] = Math.max(0, Math.min(100, variedStyleConfig[k] + (Math.random() - 0.5) * 20));
+    });
+
+    const botText = generateBotComment(topic, botOpinion, finalOpinionConfig, variedStyleConfig);
+    
     comments.push({
       id: `bot-${i}`,
-      text: botComments[i % botComments.length],
+      text: botText,
       username: shuffledUsernames[(humanCount + i) % shuffledUsernames.length],
       timestamp: shuffledTimestamps[(humanCount + i) % shuffledTimestamps.length],
       source: 'generatedBot',
-      isBotted: true, // Default to true, Player 1 can adjust
+      isBotted: true,
     });
   }
   
