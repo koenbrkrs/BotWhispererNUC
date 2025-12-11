@@ -41,7 +41,13 @@ export const SetupPhase = ({ onComplete }: SetupPhaseProps) => {
   };
 
   const handleLockIn = () => {
-    onComplete({ topic, botOpinion, botStyle }, comments);
+    onComplete({ 
+      topic, 
+      botOpinion, 
+      botStyle,
+      opinionConfig: { stanceStrength: 50, positivity: 50, category: 'pro', theme: 'tech' },
+      styleConfig: { sarcasm: 30, dismissiveness: 20, logic: 50, bulletPoints: 20, emotionalIntensity: 40, dramaticFlair: 30, postLength: 50, memeStyle: 20, pseudoIntellectual: 20, jargonUsage: 20, supportiveness: 50, agreeableness: 50 }
+    }, comments);
   };
 
   const bottedCount = comments.filter(c => c.isBotted).length;
