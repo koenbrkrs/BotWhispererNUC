@@ -12,9 +12,11 @@ interface YouTubeRevealPhaseProps {
   comments: Comment[];
   results: GameResults;
   onPlayAgain: () => void;
+  onContinue?: () => void;
+  showContinue?: boolean;
 }
 
-export const YouTubeRevealPhase = ({ config, comments, results, onPlayAgain }: YouTubeRevealPhaseProps) => {
+export const YouTubeRevealPhase = ({ config, comments, results, onPlayAgain, onContinue, showContinue = false }: YouTubeRevealPhaseProps) => {
   const accuracy = results.totalBotted > 0 
     ? Math.round((results.correctGuesses / results.totalBotted) * 100) 
     : 0;
@@ -111,14 +113,25 @@ export const YouTubeRevealPhase = ({ config, comments, results, onPlayAgain }: Y
                 </div>
               </div>
 
-              {/* Play Again */}
-              <button
-                onClick={onPlayAgain}
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-yt-red hover:bg-red-700 text-white rounded-full font-medium transition-colors"
-              >
-                <RotateCcw className="w-5 h-5" />
-                Play Again
-              </button>
+              {/* Actions */}
+              <div className="flex gap-3">
+                {showContinue && onContinue ? (
+                  <button
+                    onClick={onContinue}
+                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-yt-red hover:bg-red-700 text-white rounded-full font-medium transition-colors"
+                  >
+                    Continue to Level 2: Twitter/X →
+                  </button>
+                ) : (
+                  <button
+                    onClick={onPlayAgain}
+                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-yt-red hover:bg-red-700 text-white rounded-full font-medium transition-colors"
+                  >
+                    <RotateCcw className="w-5 h-5" />
+                    Play Again
+                  </button>
+                )}
+              </div>
             </div>
             
             {/* Full Thread */}

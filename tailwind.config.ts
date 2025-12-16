@@ -13,6 +13,7 @@ export default {
     extend: {
       fontFamily: {
         roboto: ["Roboto", "Arial", "sans-serif"],
+        chirp: ["Chirp", "system-ui", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
       },
       colors: {
         yt: {
@@ -25,6 +26,16 @@ export default {
           blue: "rgb(var(--yt-blue) / <alpha-value>)",
           border: "rgb(var(--yt-border) / <alpha-value>)",
           hover: "rgb(var(--yt-hover) / <alpha-value>)",
+        },
+        tw: {
+          "bg-primary": "rgb(var(--tw-bg-primary) / <alpha-value>)",
+          "bg-secondary": "rgb(var(--tw-bg-secondary) / <alpha-value>)",
+          "bg-hover": "rgb(var(--tw-bg-hover) / <alpha-value>)",
+          "text-primary": "rgb(var(--tw-text-primary) / <alpha-value>)",
+          "text-secondary": "rgb(var(--tw-text-secondary) / <alpha-value>)",
+          blue: "rgb(var(--tw-blue) / <alpha-value>)",
+          "blue-hover": "rgb(var(--tw-blue-hover) / <alpha-value>)",
+          border: "rgb(var(--tw-border) / <alpha-value>)",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

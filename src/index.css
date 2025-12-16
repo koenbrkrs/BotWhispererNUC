@@ -17,6 +17,16 @@
     --yt-border: 48 48 48;
     --yt-hover: 48 48 48;
 
+    /* Twitter/X Dark Theme Colors */
+    --tw-bg-primary: 0 0 0;
+    --tw-bg-secondary: 22 24 28;
+    --tw-bg-hover: 30 32 36;
+    --tw-text-primary: 231 233 234;
+    --tw-text-secondary: 113 118 123;
+    --tw-blue: 29 155 240;
+    --tw-blue-hover: 26 140 216;
+    --tw-border: 47 51 54;
+
     --background: 0 0% 6%;
     --foreground: 0 0% 95%;
     --card: 0 0% 15%;
