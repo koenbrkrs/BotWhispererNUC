@@ -115,7 +115,17 @@ const Index = () => {
     setWhatsappResults(null);
   };
 
-  const showLevelIndicator = ['playing', 'youtube-reveal', 'twitter-playing', 'twitter-reveal', 'whatsapp-playing', 'whatsapp-reveal'].includes(phase);
+  const handleLevelSelect = (level: 1 | 2 | 3) => {
+    if (level === 1) {
+      setPhase('playing');
+    } else if (level === 2) {
+      setPhase('twitter-playing');
+    } else if (level === 3) {
+      setPhase('whatsapp-playing');
+    }
+  };
+
+  const showLevelIndicator = phase !== 'setup' && phase !== 'final' && !phase.startsWith('transition');
 
   return (
     <>
@@ -125,6 +135,7 @@ const Index = () => {
           level1Complete={level1Complete}
           level2Complete={level2Complete}
           level3Complete={level3Complete}
+          onLevelSelect={handleLevelSelect}
         />
       )}
 
