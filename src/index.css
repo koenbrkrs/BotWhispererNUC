@@ -27,6 +27,22 @@
     --tw-blue-hover: 26 140 216;
     --tw-border: 47 51 54;
 
+    /* WhatsApp Dark Theme Colors */
+    --wa-bg-primary: 11 20 26;
+    --wa-bg-secondary: 17 27 33;
+    --wa-bg-header: 32 44 51;
+    --wa-bg-input: 42 57 66;
+    --wa-bg-hover: 42 57 66;
+    --wa-bg-active: 42 57 66;
+    --wa-chat-bg: 11 20 26;
+    --wa-bubble-incoming: 32 44 51;
+    --wa-bubble-outgoing: 0 92 75;
+    --wa-text-primary: 233 237 239;
+    --wa-text-secondary: 134 150 160;
+    --wa-green: 37 211 102;
+    --wa-green-dark: 0 168 132;
+    --wa-border: 38 50 56;
+
     --background: 0 0% 6%;
     --foreground: 0 0% 95%;
     --card: 0 0% 15%;

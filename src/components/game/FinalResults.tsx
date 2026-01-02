@@ -1,23 +1,25 @@
 import { GameConfig, GameResults } from '@/types/game';
 import { Button } from '../ui/button';
-import { RotateCcw, Trophy, Target, XCircle, Youtube, Twitter } from 'lucide-react';
+import { RotateCcw, Trophy, Target, XCircle, Youtube, Twitter, MessageCircle } from 'lucide-react';
 
 interface FinalResultsProps {
   config: GameConfig;
   youtubeResults: GameResults;
   twitterResults: GameResults;
+  whatsappResults: GameResults;
   onPlayAgain: () => void;
 }
 
 export const FinalResults = ({ 
   config, 
   youtubeResults, 
-  twitterResults, 
+  twitterResults,
+  whatsappResults,
   onPlayAgain 
 }: FinalResultsProps) => {
-  const totalCorrect = youtubeResults.correctGuesses + twitterResults.correctGuesses;
-  const totalBots = youtubeResults.totalBotted + twitterResults.totalBotted;
-  const totalWrong = youtubeResults.incorrectGuesses + twitterResults.incorrectGuesses;
+  const totalCorrect = youtubeResults.correctGuesses + twitterResults.correctGuesses + whatsappResults.correctGuesses;
+  const totalBots = youtubeResults.totalBotted + twitterResults.totalBotted + whatsappResults.totalBotted;
+  const totalWrong = youtubeResults.incorrectGuesses + twitterResults.incorrectGuesses + whatsappResults.incorrectGuesses;
   const totalAccuracy = totalBots > 0 ? Math.round((totalCorrect / totalBots) * 100) : 0;
 
   const getGrade = (accuracy: number) => {
@@ -34,14 +36,18 @@ export const FinalResults = ({
   const twAccuracy = twitterResults.totalBotted > 0 
     ? Math.round((twitterResults.correctGuesses / twitterResults.totalBotted) * 100) 
     : 0;
+  const waAccuracy = whatsappResults.totalBotted > 0 
+    ? Math.round((whatsappResults.correctGuesses / whatsappResults.totalBotted) * 100) 
+    : 0;
 
   const totalGrade = getGrade(totalAccuracy);
   const ytGrade = getGrade(ytAccuracy);
   const twGrade = getGrade(twAccuracy);
+  const waGrade = getGrade(waAccuracy);
 
   return (
     <div className="fixed inset-0 z-[100] bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center p-4 overflow-auto">
-      <div className="max-w-2xl w-full">
+      <div className="max-w-3xl w-full">
         <div className="text-center mb-8">
           <Trophy className="w-16 h-16 text-yellow-400 mx-auto mb-4" />
           <h1 className="text-4xl font-bold text-white mb-2">Game Complete!</h1>
@@ -64,59 +70,87 @@ export const FinalResults = ({
         </div>
 
         {/* Level Breakdown */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-3 gap-4 mb-6">
           {/* YouTube */}
-          <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+          <div className="bg-white/5 rounded-2xl p-5 border border-white/10">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-red-500/20 rounded-lg">
-                <Youtube className="w-6 h-6 text-red-500" />
+                <Youtube className="w-5 h-5 text-red-500" />
               </div>
-              <div>
-                <h3 className="font-bold text-white">Level 1: YouTube</h3>
-                <p className="text-sm text-gray-400">{ytAccuracy}% accuracy</p>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-white text-sm">Level 1</h3>
+                <p className="text-xs text-gray-400">{ytAccuracy}%</p>
               </div>
-              <div className={`ml-auto text-3xl font-bold ${ytGrade.color}`}>{ytGrade.grade}</div>
+              <div className={`text-2xl font-bold ${ytGrade.color}`}>{ytGrade.grade}</div>
             </div>
-            <div className="space-y-2 text-sm">
+            <div className="space-y-1.5 text-xs">
               <div className="flex justify-between text-gray-300">
                 <span>Bots Found</span>
                 <span className="text-green-400">{youtubeResults.correctGuesses}/{youtubeResults.totalBotted}</span>
               </div>
               <div className="flex justify-between text-gray-300">
-                <span>Wrong Guesses</span>
+                <span>Wrong</span>
                 <span className="text-red-400">{youtubeResults.incorrectGuesses}</span>
               </div>
               <div className="flex justify-between text-gray-300">
-                <span>Time Left</span>
+                <span>Time</span>
                 <span>{youtubeResults.timeRemaining}s</span>
               </div>
             </div>
           </div>
 
           {/* Twitter */}
-          <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+          <div className="bg-white/5 rounded-2xl p-5 border border-white/10">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-blue-500/20 rounded-lg">
-                <Twitter className="w-6 h-6 text-blue-500" />
+                <Twitter className="w-5 h-5 text-blue-500" />
               </div>
-              <div>
-                <h3 className="font-bold text-white">Level 2: Twitter/X</h3>
-                <p className="text-sm text-gray-400">{twAccuracy}% accuracy</p>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-white text-sm">Level 2</h3>
+                <p className="text-xs text-gray-400">{twAccuracy}%</p>
               </div>
-              <div className={`ml-auto text-3xl font-bold ${twGrade.color}`}>{twGrade.grade}</div>
+              <div className={`text-2xl font-bold ${twGrade.color}`}>{twGrade.grade}</div>
             </div>
-            <div className="space-y-2 text-sm">
+            <div className="space-y-1.5 text-xs">
               <div className="flex justify-between text-gray-300">
                 <span>Bots Found</span>
                 <span className="text-green-400">{twitterResults.correctGuesses}/{twitterResults.totalBotted}</span>
               </div>
               <div className="flex justify-between text-gray-300">
-                <span>Wrong Guesses</span>
+                <span>Wrong</span>
                 <span className="text-red-400">{twitterResults.incorrectGuesses}</span>
               </div>
               <div className="flex justify-between text-gray-300">
-                <span>Time Left</span>
+                <span>Time</span>
                 <span>{twitterResults.timeRemaining}s</span>
+              </div>
+            </div>
+          </div>
+
+          {/* WhatsApp */}
+          <div className="bg-white/5 rounded-2xl p-5 border border-white/10">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-[#25D366]/20 rounded-lg">
+                <MessageCircle className="w-5 h-5 text-[#25D366]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-white text-sm">Level 3</h3>
+                <p className="text-xs text-gray-400">{waAccuracy}%</p>
+              </div>
+              <div className={`text-2xl font-bold ${waGrade.color}`}>{waGrade.grade}</div>
+            </div>
+            <div className="space-y-1.5 text-xs">
+              <div className="flex justify-between text-gray-300">
+                <span>Bots Found</span>
+                <span className="text-green-400">{whatsappResults.correctGuesses}/{whatsappResults.totalBotted}</span>
+              </div>
+              <div className="flex justify-between text-gray-300">
+                <span>Wrong</span>
+                <span className="text-red-400">{whatsappResults.incorrectGuesses}</span>
+              </div>
+              <div className="flex justify-between text-gray-300">
+                <span>Time</span>
+                <span>{whatsappResults.timeRemaining}s</span>
               </div>
             </div>
           </div>
