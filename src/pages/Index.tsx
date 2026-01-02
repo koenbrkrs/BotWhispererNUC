@@ -6,24 +6,35 @@ import { YouTubeGamePhase } from '@/components/game/YouTubeGamePhase';
 import { YouTubeRevealPhase } from '@/components/game/YouTubeRevealPhase';
 import { TwitterGamePhase } from '@/components/game/TwitterGamePhase';
 import { TwitterRevealPhase } from '@/components/game/TwitterRevealPhase';
+import { WhatsAppGamePhase } from '@/components/game/WhatsAppGamePhase';
+import { WhatsAppRevealPhase } from '@/components/game/WhatsAppRevealPhase';
 import { LevelTransition } from '@/components/game/LevelTransition';
 import { LevelIndicator } from '@/components/game/LevelIndicator';
 import { FinalResults } from '@/components/game/FinalResults';
 import { generateComments } from '@/utils/commentGenerator';
 
-type ExtendedGamePhase = GamePhase | 'youtube-reveal' | 'transition' | 'twitter-handoff' | 'twitter-playing' | 'twitter-reveal' | 'final';
+type ExtendedGamePhase = GamePhase | 'youtube-reveal' | 'transition-twitter' | 'twitter-playing' | 'twitter-reveal' | 'transition-whatsapp' | 'whatsapp-playing' | 'whatsapp-reveal' | 'final';
 
 const Index = () => {
   const [phase, setPhase] = useState<ExtendedGamePhase>('setup');
   const [config, setConfig] = useState<GameConfig | null>(null);
   const [youtubeComments, setYoutubeComments] = useState<Comment[]>([]);
   const [twitterComments, setTwitterComments] = useState<Comment[]>([]);
+  const [whatsappComments, setWhatsappComments] = useState<Comment[]>([]);
   const [youtubeResults, setYoutubeResults] = useState<GameResults | null>(null);
   const [twitterResults, setTwitterResults] = useState<GameResults | null>(null);
+  const [whatsappResults, setWhatsappResults] = useState<GameResults | null>(null);
 
-  const currentLevel = phase.startsWith('twitter') || phase === 'final' ? 2 : 1;
+  const getCurrentLevel = (): 1 | 2 | 3 => {
+    if (phase.startsWith('whatsapp') || phase === 'final') return 3;
+    if (phase.startsWith('twitter') || phase === 'transition-whatsapp') return 2;
+    return 1;
+  };
+
+  const currentLevel = getCurrentLevel();
   const level1Complete = youtubeResults !== null;
   const level2Complete = twitterResults !== null;
+  const level3Complete = whatsappResults !== null;
 
   const handleSetupComplete = (gameConfig: GameConfig, gameComments: Comment[]) => {
     setConfig(gameConfig);
@@ -39,6 +50,17 @@ const Index = () => {
       gameConfig.styleConfig
     );
     setTwitterComments(twitterCommentsGenerated);
+
+    // Generate WhatsApp comments with same config
+    const whatsappCommentsGenerated = generateComments(
+      gameConfig.topic, 
+      gameConfig.botOpinion, 
+      gameConfig.botStyle, 
+      25, 
+      gameConfig.opinionConfig, 
+      gameConfig.styleConfig
+    );
+    setWhatsappComments(whatsappCommentsGenerated);
     
     setPhase('handoff');
   };
@@ -53,10 +75,10 @@ const Index = () => {
   };
 
   const handleYoutubeRevealContinue = () => {
-    setPhase('transition');
+    setPhase('transition-twitter');
   };
 
-  const handleTransitionComplete = () => {
+  const handleTwitterTransitionComplete = () => {
     setPhase('twitter-playing');
   };
 
@@ -66,6 +88,19 @@ const Index = () => {
   };
 
   const handleTwitterRevealContinue = () => {
+    setPhase('transition-whatsapp');
+  };
+
+  const handleWhatsAppTransitionComplete = () => {
+    setPhase('whatsapp-playing');
+  };
+
+  const handleWhatsAppComplete = (gameResults: GameResults) => {
+    setWhatsappResults(gameResults);
+    setPhase('whatsapp-reveal');
+  };
+
+  const handleWhatsAppRevealContinue = () => {
     setPhase('final');
   };
 
@@ -74,11 +109,13 @@ const Index = () => {
     setConfig(null);
     setYoutubeComments([]);
     setTwitterComments([]);
+    setWhatsappComments([]);
     setYoutubeResults(null);
     setTwitterResults(null);
+    setWhatsappResults(null);
   };
 
-  const showLevelIndicator = ['playing', 'youtube-reveal', 'twitter-playing', 'twitter-reveal'].includes(phase);
+  const showLevelIndicator = ['playing', 'youtube-reveal', 'twitter-playing', 'twitter-reveal', 'whatsapp-playing', 'whatsapp-reveal'].includes(phase);
 
   return (
     <>
@@ -87,6 +124,7 @@ const Index = () => {
           currentLevel={currentLevel}
           level1Complete={level1Complete}
           level2Complete={level2Complete}
+          level3Complete={level3Complete}
         />
       )}
 
@@ -120,11 +158,11 @@ const Index = () => {
         />
       )}
 
-      {phase === 'transition' && (
+      {phase === 'transition-twitter' && (
         <LevelTransition
           fromLevel="YouTube"
           toLevel="Twitter/X"
-          onComplete={handleTransitionComplete}
+          onComplete={handleTwitterTransitionComplete}
         />
       )}
 
@@ -147,11 +185,39 @@ const Index = () => {
         />
       )}
 
-      {phase === 'final' && config && youtubeResults && twitterResults && (
+      {phase === 'transition-whatsapp' && (
+        <LevelTransition
+          fromLevel="Twitter/X"
+          toLevel="WhatsApp"
+          onComplete={handleWhatsAppTransitionComplete}
+        />
+      )}
+
+      {phase === 'whatsapp-playing' && config && (
+        <WhatsAppGamePhase
+          topic={config.topic}
+          comments={whatsappComments}
+          onComplete={handleWhatsAppComplete}
+        />
+      )}
+
+      {phase === 'whatsapp-reveal' && config && whatsappResults && (
+        <WhatsAppRevealPhase
+          config={config}
+          comments={whatsappComments}
+          results={whatsappResults}
+          onPlayAgain={handlePlayAgain}
+          onContinue={handleWhatsAppRevealContinue}
+          showContinue={true}
+        />
+      )}
+
+      {phase === 'final' && config && youtubeResults && twitterResults && whatsappResults && (
         <FinalResults
           config={config}
           youtubeResults={youtubeResults}
           twitterResults={twitterResults}
+          whatsappResults={whatsappResults}
           onPlayAgain={handlePlayAgain}
         />
       )}
