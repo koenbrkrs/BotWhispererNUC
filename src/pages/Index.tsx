@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
-import { GameResults, BotConfig, Comment, GameConfig, OpinionConfig, StyleConfig } from '@/types/game';
+import { useState, useCallback, useRef } from 'react';
+import { GameResults, BotConfig, Comment } from '@/types/game';
 import { IntroScreen } from '@/components/game/IntroScreen';
 import { LoadingScreen } from '@/components/game/LoadingScreen';
 import { BotSetupModal } from '@/components/game/BotSetupModal';
@@ -22,6 +22,37 @@ type GamePhase =
   | 'end-lost'
   | 'restarting';
 
+const STANCE_OPTIONS: Record<string, string[]> = {
+  "Women's rights": [
+    "Strongly support gender equality and reproductive rights",
+    "Moderately in favor of women's empowerment",
+    "Neutral on most issues but support basic rights",
+    "Skeptical of feminist movements",
+    "Opposed to expanding women's rights further"
+  ],
+  "Data centers": [
+    "Essential for tech advancement and should expand rapidly",
+    "Necessary but need better environmental regulations",
+    "Neutral – pros and cons balance out",
+    "Overhyped and energy-wasting",
+    "Should be heavily restricted due to environmental impact"
+  ],
+  "Immigration": [
+    "Open borders and welcome all immigrants",
+    "Support legal immigration with reforms",
+    "Neutral – depends on economic needs",
+    "Tighter controls needed for security",
+    "Strict limits and deportation policies"
+  ],
+  "Pineapple on pizza": [
+    "It's incredible and a delicious innovation",
+    "Fun occasional twist but not traditional",
+    "Neutral – to each their own",
+    "It's the biggest pizza scandal in the world",
+    "Has nothing to do with pizza and ruins the culture"
+  ]
+};
+
 const DEFAULT_BOT_CONFIG: BotConfig = {
   friendlyAggressive: 50,
   logicalIllogical: 50,
@@ -30,32 +61,8 @@ const DEFAULT_BOT_CONFIG: BotConfig = {
   openClosed: 50,
   minimalVerbose: 50,
   emojiAmount: 30,
-  topic: "Women's rights"
-};
-
-const convertBotConfigToGameConfig = (botConfig: BotConfig): { opinionConfig: OpinionConfig; styleConfig: StyleConfig } => {
-  return {
-    opinionConfig: {
-      stanceStrength: botConfig.friendlyAggressive,
-      positivity: 100 - botConfig.friendlyAggressive,
-      category: botConfig.friendlyAggressive > 50 ? 'oppose' : 'support',
-      theme: 'social'
-    },
-    styleConfig: {
-      sarcasm: 100 - botConfig.sarcasmDirect,
-      dismissiveness: botConfig.friendlyAggressive,
-      logic: 100 - botConfig.logicalIllogical,
-      bulletPoints: botConfig.minimalVerbose > 70 ? 60 : 20,
-      emotionalIntensity: botConfig.friendlyAggressive,
-      dramaticFlair: 100 - botConfig.humorSerious,
-      postLength: 100 - botConfig.minimalVerbose,
-      memeStyle: 100 - botConfig.humorSerious,
-      pseudoIntellectual: 100 - botConfig.logicalIllogical,
-      jargonUsage: botConfig.minimalVerbose,
-      supportiveness: 100 - botConfig.friendlyAggressive,
-      agreeableness: 100 - botConfig.openClosed
-    }
-  };
+  topic: "Women's rights",
+  stance: STANCE_OPTIONS["Women's rights"][0]
 };
 
 const Index = () => {
@@ -72,13 +79,14 @@ const Index = () => {
   const [twitterResults, setTwitterResults] = useState<GameResults | null>(null);
   const [whatsappResults, setWhatsappResults] = useState<GameResults | null>(null);
 
+  // Track total time used across levels
+  const totalTimeUsedRef = useRef(0);
+
   const generateAllComments = useCallback((config: BotConfig) => {
-    const { opinionConfig, styleConfig } = convertBotConfigToGameConfig(config);
-    const botOpinion = `This is my stance on ${config.topic}`;
-    
-    const ytComments = generateComments(config.topic, botOpinion, '', 20, opinionConfig, styleConfig);
-    const twComments = generateComments(config.topic, botOpinion, '', 25, opinionConfig, styleConfig);
-    const waComments = generateComments(config.topic, botOpinion, '', 30, opinionConfig, styleConfig);
+    // Generate 10 bots + 10 humans per level = 20 each, total 30 bots across all levels
+    const ytComments = generateComments(config, 20);
+    const twComments = generateComments(config, 20);
+    const waComments = generateComments(config, 20);
     
     setYoutubeComments(ytComments);
     setTwitterComments(twComments);
@@ -86,6 +94,7 @@ const Index = () => {
   }, []);
 
   const handleStart = () => {
+    totalTimeUsedRef.current = 0;
     generateAllComments(botConfig);
     setPhase('loading');
   };
@@ -109,18 +118,22 @@ const Index = () => {
 
   const handleYoutubeComplete = (results: GameResults) => {
     setYoutubeResults(results);
+    // Add time used (120 - remaining)
+    totalTimeUsedRef.current += (120 - results.timeRemaining);
     setLives(3); // Reset lives for next level
     setPhase('transition-twitter');
   };
 
   const handleTwitterComplete = (results: GameResults) => {
     setTwitterResults(results);
+    totalTimeUsedRef.current += (120 - results.timeRemaining);
     setLives(3); // Reset lives for next level
     setPhase('transition-whatsapp');
   };
 
   const handleWhatsAppComplete = (results: GameResults) => {
     setWhatsappResults(results);
+    totalTimeUsedRef.current += (120 - results.timeRemaining);
     setPhase('end-won');
   };
 
@@ -131,6 +144,7 @@ const Index = () => {
   const handleRestartComplete = () => {
     // Reset all state
     setLives(3);
+    totalTimeUsedRef.current = 0;
     setYoutubeResults(null);
     setTwitterResults(null);
     setWhatsappResults(null);
@@ -249,6 +263,8 @@ const Index = () => {
           youtubeResults={youtubeResults || defaultResults}
           twitterResults={twitterResults || defaultResults}
           whatsappResults={whatsappResults || defaultResults}
+          botConfig={botConfig}
+          totalTimeUsed={totalTimeUsedRef.current}
           onRestart={handleRestart}
         />
       )}
@@ -259,6 +275,8 @@ const Index = () => {
           youtubeResults={youtubeResults || defaultResults}
           twitterResults={twitterResults || defaultResults}
           whatsappResults={whatsappResults || defaultResults}
+          botConfig={botConfig}
+          totalTimeUsed={totalTimeUsedRef.current}
           onRestart={handleRestart}
         />
       )}

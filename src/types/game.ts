@@ -16,6 +16,13 @@ export interface BotConfig {
   minimalVerbose: number; // 0 = Minimal, 100 = Verbose
   emojiAmount: number; // 0 = None, 100 = Heavy
   topic: string;
+  stance: string;
+}
+
+export interface ScoreEntry {
+  code: string;
+  score: number;
+  time: number;
 }
 
 // Keep old interfaces for backwards compatibility

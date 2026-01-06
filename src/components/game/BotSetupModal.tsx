@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BotConfig } from '@/types/game';
 import { X } from 'lucide-react';
 
@@ -15,6 +15,37 @@ const TOPICS = [
   "Immigration",
   "Pineapple on pizza"
 ];
+
+const STANCE_OPTIONS: Record<string, string[]> = {
+  "Women's rights": [
+    "Strongly support gender equality and reproductive rights",
+    "Moderately in favor of women's empowerment",
+    "Neutral on most issues but support basic rights",
+    "Skeptical of feminist movements",
+    "Opposed to expanding women's rights further"
+  ],
+  "Data centers": [
+    "Essential for tech advancement and should expand rapidly",
+    "Necessary but need better environmental regulations",
+    "Neutral – pros and cons balance out",
+    "Overhyped and energy-wasting",
+    "Should be heavily restricted due to environmental impact"
+  ],
+  "Immigration": [
+    "Open borders and welcome all immigrants",
+    "Support legal immigration with reforms",
+    "Neutral – depends on economic needs",
+    "Tighter controls needed for security",
+    "Strict limits and deportation policies"
+  ],
+  "Pineapple on pizza": [
+    "It's incredible and a delicious innovation",
+    "Fun occasional twist but not traditional",
+    "Neutral – to each their own",
+    "It's the biggest pizza scandal in the world",
+    "Has nothing to do with pizza and ruins the culture"
+  ]
+};
 
 const Slider = ({ 
   label, 
@@ -47,6 +78,8 @@ const Slider = ({
 );
 
 export const BotSetupModal = ({ isOpen, onClose, onConfirm, initialConfig }: BotSetupModalProps) => {
+  const getDefaultStance = (topic: string) => STANCE_OPTIONS[topic]?.[0] || '';
+  
   const [config, setConfig] = useState<BotConfig>(initialConfig || {
     friendlyAggressive: 50,
     logicalIllogical: 50,
@@ -55,15 +88,34 @@ export const BotSetupModal = ({ isOpen, onClose, onConfirm, initialConfig }: Bot
     openClosed: 50,
     minimalVerbose: 50,
     emojiAmount: 30,
-    topic: TOPICS[0]
+    topic: TOPICS[0],
+    stance: getDefaultStance(TOPICS[0])
   });
 
+  // Update stance when topic changes
+  useEffect(() => {
+    setConfig(prev => ({
+      ...prev,
+      stance: STANCE_OPTIONS[prev.topic]?.[0] || ''
+    }));
+  }, [config.topic]);
+
   if (!isOpen) return null;
+
+  const handleTopicChange = (newTopic: string) => {
+    setConfig(prev => ({
+      ...prev,
+      topic: newTopic,
+      stance: STANCE_OPTIONS[newTopic]?.[0] || ''
+    }));
+  };
 
   const handleConfirm = () => {
     onConfirm(config);
     onClose();
   };
+
+  const currentStanceOptions = STANCE_OPTIONS[config.topic] || [];
 
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 font-retro">
@@ -83,11 +135,25 @@ export const BotSetupModal = ({ isOpen, onClose, onConfirm, initialConfig }: Bot
             <label className="text-white/70 text-sm">Discussion Topic</label>
             <select
               value={config.topic}
-              onChange={(e) => setConfig(prev => ({ ...prev, topic: e.target.value }))}
+              onChange={(e) => handleTopicChange(e.target.value)}
               className="w-full p-3 bg-gray-800 border border-retro-red/30 rounded text-white focus:border-retro-red outline-none"
             >
               {TOPICS.map(topic => (
                 <option key={topic} value={topic}>{topic}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Stance Dropdown */}
+          <div className="space-y-2">
+            <label className="text-white/70 text-sm">Bot Stance / Opinion</label>
+            <select
+              value={config.stance}
+              onChange={(e) => setConfig(prev => ({ ...prev, stance: e.target.value }))}
+              className="w-full p-3 bg-gray-800 border border-retro-red/30 rounded text-white focus:border-retro-red outline-none text-sm"
+            >
+              {currentStanceOptions.map(stance => (
+                <option key={stance} value={stance}>{stance}</option>
               ))}
             </select>
           </div>
