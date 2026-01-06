@@ -2,46 +2,38 @@ import { useState, useEffect } from 'react';
 import { Comment, PlayerGuess, GameResults } from '@/types/game';
 import { WhatsAppLayout } from '../whatsapp/WhatsAppLayout';
 import { WhatsAppChat } from '../whatsapp/WhatsAppChat';
-import { Timer } from './Timer';
+import { GameHUD } from './GameHUD';
+import { GameProgressBar } from './GameProgressBar';
 
 interface WhatsAppGamePhaseProps {
   topic: string;
   comments: Comment[];
+  lives: number;
   onComplete: (results: GameResults) => void;
+  onLiveLost: () => void;
+  onGameOver: () => void;
+  onLevelSelect?: (level: 1 | 2 | 3) => void;
 }
 
-export const WhatsAppGamePhase = ({ topic, comments, onComplete }: WhatsAppGamePhaseProps) => {
+export const WhatsAppGamePhase = ({ 
+  topic, 
+  comments, 
+  lives,
+  onComplete, 
+  onLiveLost,
+  onGameOver,
+  onLevelSelect 
+}: WhatsAppGamePhaseProps) => {
   const [guesses, setGuesses] = useState<Record<string, PlayerGuess>>({});
   const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());
   const [timeRemaining, setTimeRemaining] = useState(120);
   const [isRunning, setIsRunning] = useState(true);
-  const [visibleComments, setVisibleComments] = useState<Comment[]>([]);
+  const [livesLost, setLivesLost] = useState(0);
 
   const totalBotted = comments.filter(c => c.isBotted).length;
   const correctGuesses = Object.values(guesses).filter(g => g.correct).length;
   const incorrectGuesses = Object.values(guesses).filter(g => !g.correct).length;
   const foundAll = correctGuesses === totalBotted;
-
-  // Gradually reveal comments to simulate "incoming messages"
-  useEffect(() => {
-    // Start with first 10 comments
-    setVisibleComments(comments.slice(0, 10));
-
-    // Add remaining comments over time
-    const remaining = comments.slice(10);
-    let index = 0;
-
-    const interval = setInterval(() => {
-      if (index < remaining.length && isRunning) {
-        setVisibleComments(prev => [...prev, remaining[index]]);
-        index++;
-      } else if (index >= remaining.length) {
-        clearInterval(interval);
-      }
-    }, 3000 + Math.random() * 2000); // 3-5 seconds between messages
-
-    return () => clearInterval(interval);
-  }, [comments, isRunning]);
 
   useEffect(() => {
     if (foundAll && isRunning) {
@@ -49,6 +41,13 @@ export const WhatsAppGamePhase = ({ topic, comments, onComplete }: WhatsAppGameP
       handleGameEnd(false);
     }
   }, [foundAll]);
+
+  useEffect(() => {
+    if (lives <= 0) {
+      setIsRunning(false);
+      onGameOver();
+    }
+  }, [lives]);
 
   const handleGameEnd = (timerExpired: boolean) => {
     const results: GameResults = {
@@ -58,6 +57,7 @@ export const WhatsAppGamePhase = ({ topic, comments, onComplete }: WhatsAppGameP
       missedBotted: totalBotted - correctGuesses,
       timeRemaining,
       timerExpired,
+      livesLost,
     };
     onComplete(results);
   };
@@ -76,24 +76,37 @@ export const WhatsAppGamePhase = ({ topic, comments, onComplete }: WhatsAppGameP
       setTimeout(() => {
         setRemovedIds(prev => new Set([...prev, comment.id]));
       }, 500);
+    } else {
+      setLivesLost(prev => prev + 1);
+      onLiveLost();
     }
   };
 
   return (
     <WhatsAppLayout groupName={topic}>
-      {/* Floating Timer */}
-      <div className="fixed top-4 right-4 z-50">
-        <Timer
-          duration={120}
-          isRunning={isRunning}
-          onComplete={() => handleGameEnd(true)}
-          onTick={setTimeRemaining}
-        />
-      </div>
+      {/* Progress Bar */}
+      <GameProgressBar
+        currentLevel={3}
+        level1Complete={true}
+        level2Complete={true}
+        level3Complete={false}
+        onLevelSelect={onLevelSelect}
+      />
 
+      {/* HUD with Timer and Lives */}
+      <GameHUD
+        timeRemaining={120}
+        lives={lives}
+        currentLevel={3}
+        isRunning={isRunning}
+        onTimeUp={() => handleGameEnd(true)}
+        onTick={setTimeRemaining}
+      />
+
+      {/* Load ALL comments statically - no dynamic pop-ups */}
       <WhatsAppChat
         groupName={topic}
-        comments={visibleComments}
+        comments={comments}
         mode="playing"
         guesses={guesses}
         removedIds={removedIds}

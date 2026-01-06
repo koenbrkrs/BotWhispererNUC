@@ -21,25 +21,31 @@ export const LevelTransition = ({ fromLevel, toLevel, onComplete }: LevelTransit
     };
   }, [onComplete]);
 
+  const levelColor = toLevel.includes('Twitter') 
+    ? 'text-twitter-blue' 
+    : toLevel.includes('WhatsApp') 
+      ? 'text-[#25D366]' 
+      : 'text-red-500';
+
   return (
-    <div className="fixed inset-0 z-[100] bg-black flex items-center justify-center">
+    <div className="fixed inset-0 z-[100] bg-gradient-to-b from-[#1a1a1a] to-[#0a0a0a] flex items-center justify-center font-retro">
       <div className="text-center">
         {step === 0 && (
           <div className="animate-fade-in">
             <p className="text-2xl text-white/60 mb-2">Level Complete</p>
-            <h2 className="text-4xl font-bold text-white">{fromLevel}</h2>
+            <h2 className="text-4xl text-retro-green">{fromLevel}</h2>
           </div>
         )}
         {step === 1 && (
           <div className="animate-fade-in">
             <p className="text-xl text-white/60 mb-4">Moving to</p>
-            <h2 className="text-5xl font-bold text-blue-500">{toLevel}</h2>
+            <h2 className={`text-5xl ${levelColor}`}>{toLevel}</h2>
             <p className="text-lg text-white/40 mt-4">Infiltrate the timeline...</p>
           </div>
         )}
         {step === 2 && (
           <div className="animate-fade-in">
-            <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto" />
+            <div className={`w-8 h-8 border-4 border-t-transparent rounded-full animate-spin mx-auto ${levelColor.replace('text-', 'border-')}`} />
           </div>
         )}
       </div>

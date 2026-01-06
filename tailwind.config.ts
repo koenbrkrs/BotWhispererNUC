@@ -14,6 +14,7 @@ export default {
       fontFamily: {
         roboto: ["Roboto", "Arial", "sans-serif"],
         chirp: ["Chirp", "system-ui", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+        retro: ["DotGothic16", "monospace"],
       },
       colors: {
         yt: {
@@ -52,6 +53,18 @@ export default {
           green: "rgb(var(--wa-green) / <alpha-value>)",
           "green-dark": "rgb(var(--wa-green-dark) / <alpha-value>)",
           border: "rgb(var(--wa-border) / <alpha-value>)",
+        },
+        retro: {
+          red: "rgb(var(--retro-red) / <alpha-value>)",
+          green: "rgb(var(--retro-green) / <alpha-value>)",
+          blue: "rgb(var(--retro-blue) / <alpha-value>)",
+          muted: "rgb(var(--retro-muted) / <alpha-value>)",
+          button: "rgb(var(--retro-button) / <alpha-value>)",
+          "button-text": "rgb(var(--retro-button-text) / <alpha-value>)",
+          "button-hover": "rgb(var(--retro-button-hover) / <alpha-value>)",
+        },
+        twitter: {
+          blue: "rgb(var(--tw-blue) / <alpha-value>)",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

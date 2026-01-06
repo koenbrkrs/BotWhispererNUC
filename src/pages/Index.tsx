@@ -1,123 +1,153 @@
-import { useState } from 'react';
-import { GamePhase, Comment, GameConfig, GameResults } from '@/types/game';
-import { YouTubeSetupPhase } from '@/components/game/YouTubeSetupPhase';
-import { YouTubeHandoffModal } from '@/components/game/YouTubeHandoffModal';
+import { useState, useCallback } from 'react';
+import { GameResults, BotConfig, Comment, GameConfig, OpinionConfig, StyleConfig } from '@/types/game';
+import { IntroScreen } from '@/components/game/IntroScreen';
+import { LoadingScreen } from '@/components/game/LoadingScreen';
+import { BotSetupModal } from '@/components/game/BotSetupModal';
+import { EndScreen } from '@/components/game/EndScreen';
 import { YouTubeGamePhase } from '@/components/game/YouTubeGamePhase';
-import { YouTubeRevealPhase } from '@/components/game/YouTubeRevealPhase';
 import { TwitterGamePhase } from '@/components/game/TwitterGamePhase';
-import { TwitterRevealPhase } from '@/components/game/TwitterRevealPhase';
 import { WhatsAppGamePhase } from '@/components/game/WhatsAppGamePhase';
-import { WhatsAppRevealPhase } from '@/components/game/WhatsAppRevealPhase';
 import { LevelTransition } from '@/components/game/LevelTransition';
-import { LevelIndicator } from '@/components/game/LevelIndicator';
-import { FinalResults } from '@/components/game/FinalResults';
 import { generateComments } from '@/utils/commentGenerator';
 
-type ExtendedGamePhase = GamePhase | 'youtube-reveal' | 'transition-twitter' | 'twitter-playing' | 'twitter-reveal' | 'transition-whatsapp' | 'whatsapp-playing' | 'whatsapp-reveal' | 'final';
+type GamePhase = 
+  | 'intro' 
+  | 'loading' 
+  | 'youtube-playing' 
+  | 'transition-twitter' 
+  | 'twitter-playing' 
+  | 'transition-whatsapp' 
+  | 'whatsapp-playing' 
+  | 'end-won'
+  | 'end-lost'
+  | 'restarting';
+
+const DEFAULT_BOT_CONFIG: BotConfig = {
+  friendlyAggressive: 50,
+  logicalIllogical: 50,
+  humorSerious: 50,
+  sarcasmDirect: 50,
+  openClosed: 50,
+  minimalVerbose: 50,
+  emojiAmount: 30,
+  topic: "Women's rights"
+};
+
+const convertBotConfigToGameConfig = (botConfig: BotConfig): { opinionConfig: OpinionConfig; styleConfig: StyleConfig } => {
+  return {
+    opinionConfig: {
+      stanceStrength: botConfig.friendlyAggressive,
+      positivity: 100 - botConfig.friendlyAggressive,
+      category: botConfig.friendlyAggressive > 50 ? 'oppose' : 'support',
+      theme: 'social'
+    },
+    styleConfig: {
+      sarcasm: 100 - botConfig.sarcasmDirect,
+      dismissiveness: botConfig.friendlyAggressive,
+      logic: 100 - botConfig.logicalIllogical,
+      bulletPoints: botConfig.minimalVerbose > 70 ? 60 : 20,
+      emotionalIntensity: botConfig.friendlyAggressive,
+      dramaticFlair: 100 - botConfig.humorSerious,
+      postLength: 100 - botConfig.minimalVerbose,
+      memeStyle: 100 - botConfig.humorSerious,
+      pseudoIntellectual: 100 - botConfig.logicalIllogical,
+      jargonUsage: botConfig.minimalVerbose,
+      supportiveness: 100 - botConfig.friendlyAggressive,
+      agreeableness: 100 - botConfig.openClosed
+    }
+  };
+};
 
 const Index = () => {
-  const [phase, setPhase] = useState<ExtendedGamePhase>('setup');
-  const [config, setConfig] = useState<GameConfig | null>(null);
+  const [phase, setPhase] = useState<GamePhase>('intro');
+  const [botConfig, setBotConfig] = useState<BotConfig>(DEFAULT_BOT_CONFIG);
+  const [showSetupModal, setShowSetupModal] = useState(false);
+  
+  const [lives, setLives] = useState(3);
   const [youtubeComments, setYoutubeComments] = useState<Comment[]>([]);
   const [twitterComments, setTwitterComments] = useState<Comment[]>([]);
   const [whatsappComments, setWhatsappComments] = useState<Comment[]>([]);
+  
   const [youtubeResults, setYoutubeResults] = useState<GameResults | null>(null);
   const [twitterResults, setTwitterResults] = useState<GameResults | null>(null);
   const [whatsappResults, setWhatsappResults] = useState<GameResults | null>(null);
 
-  const getCurrentLevel = (): 1 | 2 | 3 => {
-    if (phase.startsWith('whatsapp') || phase === 'final') return 3;
-    if (phase.startsWith('twitter') || phase === 'transition-whatsapp') return 2;
-    return 1;
-  };
-
-  const currentLevel = getCurrentLevel();
-  const level1Complete = youtubeResults !== null;
-  const level2Complete = twitterResults !== null;
-  const level3Complete = whatsappResults !== null;
-
-  const handleSetupComplete = (gameConfig: GameConfig, gameComments: Comment[]) => {
-    setConfig(gameConfig);
-    setYoutubeComments(gameComments);
+  const generateAllComments = useCallback((config: BotConfig) => {
+    const { opinionConfig, styleConfig } = convertBotConfigToGameConfig(config);
+    const botOpinion = `This is my stance on ${config.topic}`;
     
-    // Generate Twitter comments with same config
-    const twitterCommentsGenerated = generateComments(
-      gameConfig.topic, 
-      gameConfig.botOpinion, 
-      gameConfig.botStyle, 
-      20, 
-      gameConfig.opinionConfig, 
-      gameConfig.styleConfig
-    );
-    setTwitterComments(twitterCommentsGenerated);
-
-    // Generate WhatsApp comments with same config
-    const whatsappCommentsGenerated = generateComments(
-      gameConfig.topic, 
-      gameConfig.botOpinion, 
-      gameConfig.botStyle, 
-      25, 
-      gameConfig.opinionConfig, 
-      gameConfig.styleConfig
-    );
-    setWhatsappComments(whatsappCommentsGenerated);
+    const ytComments = generateComments(config.topic, botOpinion, '', 20, opinionConfig, styleConfig);
+    const twComments = generateComments(config.topic, botOpinion, '', 25, opinionConfig, styleConfig);
+    const waComments = generateComments(config.topic, botOpinion, '', 30, opinionConfig, styleConfig);
     
-    setPhase('handoff');
+    setYoutubeComments(ytComments);
+    setTwitterComments(twComments);
+    setWhatsappComments(waComments);
+  }, []);
+
+  const handleStart = () => {
+    generateAllComments(botConfig);
+    setPhase('loading');
   };
 
-  const handleHandoffContinue = () => {
-    setPhase('playing');
+  const handleSetupConfirm = (config: BotConfig) => {
+    setBotConfig(config);
+    setShowSetupModal(false);
   };
 
-  const handleYoutubeComplete = (gameResults: GameResults) => {
-    setYoutubeResults(gameResults);
-    setPhase('youtube-reveal');
+  const handleLoadingComplete = () => {
+    setPhase('youtube-playing');
   };
 
-  const handleYoutubeRevealContinue = () => {
+  const handleLiveLost = () => {
+    setLives(prev => prev - 1);
+  };
+
+  const handleGameOver = () => {
+    setPhase('end-lost');
+  };
+
+  const handleYoutubeComplete = (results: GameResults) => {
+    setYoutubeResults(results);
+    setLives(3); // Reset lives for next level
     setPhase('transition-twitter');
   };
 
-  const handleTwitterTransitionComplete = () => {
-    setPhase('twitter-playing');
-  };
-
-  const handleTwitterComplete = (gameResults: GameResults) => {
-    setTwitterResults(gameResults);
-    setPhase('twitter-reveal');
-  };
-
-  const handleTwitterRevealContinue = () => {
+  const handleTwitterComplete = (results: GameResults) => {
+    setTwitterResults(results);
+    setLives(3); // Reset lives for next level
     setPhase('transition-whatsapp');
   };
 
-  const handleWhatsAppTransitionComplete = () => {
-    setPhase('whatsapp-playing');
+  const handleWhatsAppComplete = (results: GameResults) => {
+    setWhatsappResults(results);
+    setPhase('end-won');
   };
 
-  const handleWhatsAppComplete = (gameResults: GameResults) => {
-    setWhatsappResults(gameResults);
-    setPhase('whatsapp-reveal');
+  const handleRestart = () => {
+    setPhase('restarting');
   };
 
-  const handleWhatsAppRevealContinue = () => {
-    setPhase('final');
-  };
-
-  const handlePlayAgain = () => {
-    setPhase('setup');
-    setConfig(null);
-    setYoutubeComments([]);
-    setTwitterComments([]);
-    setWhatsappComments([]);
+  const handleRestartComplete = () => {
+    // Reset all state
+    setLives(3);
     setYoutubeResults(null);
     setTwitterResults(null);
     setWhatsappResults(null);
+    setYoutubeComments([]);
+    setTwitterComments([]);
+    setWhatsappComments([]);
+    setPhase('intro');
   };
 
   const handleLevelSelect = (level: 1 | 2 | 3) => {
+    // Ensure comments are generated
+    if (youtubeComments.length === 0) {
+      generateAllComments(botConfig);
+    }
+    
     if (level === 1) {
-      setPhase('playing');
+      setPhase('youtube-playing');
     } else if (level === 2) {
       setPhase('twitter-playing');
     } else if (level === 3) {
@@ -125,47 +155,51 @@ const Index = () => {
     }
   };
 
-  const showLevelIndicator = phase !== 'setup' && phase !== 'final' && !phase.startsWith('transition');
+  // Create default results for end screen if needed
+  const defaultResults: GameResults = {
+    totalBotted: 0,
+    correctGuesses: 0,
+    incorrectGuesses: 0,
+    missedBotted: 0,
+    timeRemaining: 0,
+    timerExpired: false
+  };
 
   return (
     <>
-      {showLevelIndicator && (
-        <LevelIndicator
-          currentLevel={currentLevel}
-          level1Complete={level1Complete}
-          level2Complete={level2Complete}
-          level3Complete={level3Complete}
-          onLevelSelect={handleLevelSelect}
+      {phase === 'intro' && (
+        <>
+          <IntroScreen 
+            onStart={handleStart}
+            onSetupBots={() => setShowSetupModal(true)}
+          />
+          <BotSetupModal
+            isOpen={showSetupModal}
+            onClose={() => setShowSetupModal(false)}
+            onConfirm={handleSetupConfirm}
+            initialConfig={botConfig}
+          />
+        </>
+      )}
+
+      {phase === 'loading' && (
+        <LoadingScreen
+          onComplete={handleLoadingComplete}
+          message="Starting"
+          subMessage="Game starting..."
+          color="red"
         />
       )}
 
-      {phase === 'setup' && (
-        <YouTubeSetupPhase onComplete={handleSetupComplete} />
-      )}
-
-      {phase === 'handoff' && config && (
-        <YouTubeHandoffModal 
-          onContinue={handleHandoffContinue} 
-          topic={config.topic}
-        />
-      )}
-
-      {phase === 'playing' && config && (
+      {phase === 'youtube-playing' && (
         <YouTubeGamePhase
-          topic={config.topic}
+          topic={botConfig.topic}
           comments={youtubeComments}
+          lives={lives}
           onComplete={handleYoutubeComplete}
-        />
-      )}
-
-      {phase === 'youtube-reveal' && config && youtubeResults && (
-        <YouTubeRevealPhase
-          config={config}
-          comments={youtubeComments}
-          results={youtubeResults}
-          onPlayAgain={handlePlayAgain}
-          onContinue={handleYoutubeRevealContinue}
-          showContinue={true}
+          onLiveLost={handleLiveLost}
+          onGameOver={handleGameOver}
+          onLevelSelect={handleLevelSelect}
         />
       )}
 
@@ -173,26 +207,19 @@ const Index = () => {
         <LevelTransition
           fromLevel="YouTube"
           toLevel="Twitter/X"
-          onComplete={handleTwitterTransitionComplete}
+          onComplete={() => setPhase('twitter-playing')}
         />
       )}
 
-      {phase === 'twitter-playing' && config && (
+      {phase === 'twitter-playing' && (
         <TwitterGamePhase
-          topic={config.topic}
+          topic={botConfig.topic}
           comments={twitterComments}
+          lives={lives}
           onComplete={handleTwitterComplete}
-        />
-      )}
-
-      {phase === 'twitter-reveal' && config && twitterResults && (
-        <TwitterRevealPhase
-          config={config}
-          comments={twitterComments}
-          results={twitterResults}
-          onPlayAgain={handlePlayAgain}
-          onContinue={handleTwitterRevealContinue}
-          showContinue={true}
+          onLiveLost={handleLiveLost}
+          onGameOver={handleGameOver}
+          onLevelSelect={handleLevelSelect}
         />
       )}
 
@@ -200,36 +227,48 @@ const Index = () => {
         <LevelTransition
           fromLevel="Twitter/X"
           toLevel="WhatsApp"
-          onComplete={handleWhatsAppTransitionComplete}
+          onComplete={() => setPhase('whatsapp-playing')}
         />
       )}
 
-      {phase === 'whatsapp-playing' && config && (
+      {phase === 'whatsapp-playing' && (
         <WhatsAppGamePhase
-          topic={config.topic}
+          topic={botConfig.topic}
           comments={whatsappComments}
+          lives={lives}
           onComplete={handleWhatsAppComplete}
+          onLiveLost={handleLiveLost}
+          onGameOver={handleGameOver}
+          onLevelSelect={handleLevelSelect}
         />
       )}
 
-      {phase === 'whatsapp-reveal' && config && whatsappResults && (
-        <WhatsAppRevealPhase
-          config={config}
-          comments={whatsappComments}
-          results={whatsappResults}
-          onPlayAgain={handlePlayAgain}
-          onContinue={handleWhatsAppRevealContinue}
-          showContinue={true}
+      {phase === 'end-won' && (
+        <EndScreen
+          won={true}
+          youtubeResults={youtubeResults || defaultResults}
+          twitterResults={twitterResults || defaultResults}
+          whatsappResults={whatsappResults || defaultResults}
+          onRestart={handleRestart}
         />
       )}
 
-      {phase === 'final' && config && youtubeResults && twitterResults && whatsappResults && (
-        <FinalResults
-          config={config}
-          youtubeResults={youtubeResults}
-          twitterResults={twitterResults}
-          whatsappResults={whatsappResults}
-          onPlayAgain={handlePlayAgain}
+      {phase === 'end-lost' && (
+        <EndScreen
+          won={false}
+          youtubeResults={youtubeResults || defaultResults}
+          twitterResults={twitterResults || defaultResults}
+          whatsappResults={whatsappResults || defaultResults}
+          onRestart={handleRestart}
+        />
+      )}
+
+      {phase === 'restarting' && (
+        <LoadingScreen
+          onComplete={handleRestartComplete}
+          message="RESTARTING"
+          subMessage="Game restarting..."
+          color="green"
         />
       )}
     </>
