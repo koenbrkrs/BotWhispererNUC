@@ -2,19 +2,33 @@ import { useState, useEffect } from 'react';
 import { Comment, PlayerGuess, GameResults } from '@/types/game';
 import { TwitterLayout } from '../twitter/TwitterLayout';
 import { TwitterFeed } from '../twitter/TwitterFeed';
-import { Timer } from './Timer';
+import { GameHUD } from './GameHUD';
+import { GameProgressBar } from './GameProgressBar';
 
 interface TwitterGamePhaseProps {
   topic: string;
   comments: Comment[];
+  lives: number;
   onComplete: (results: GameResults) => void;
+  onLiveLost: () => void;
+  onGameOver: () => void;
+  onLevelSelect?: (level: 1 | 2 | 3) => void;
 }
 
-export const TwitterGamePhase = ({ topic, comments, onComplete }: TwitterGamePhaseProps) => {
+export const TwitterGamePhase = ({ 
+  topic, 
+  comments, 
+  lives,
+  onComplete, 
+  onLiveLost,
+  onGameOver,
+  onLevelSelect 
+}: TwitterGamePhaseProps) => {
   const [guesses, setGuesses] = useState<Record<string, PlayerGuess>>({});
   const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());
   const [timeRemaining, setTimeRemaining] = useState(120);
   const [isRunning, setIsRunning] = useState(true);
+  const [livesLost, setLivesLost] = useState(0);
 
   const totalBotted = comments.filter(c => c.isBotted).length;
   const correctGuesses = Object.values(guesses).filter(g => g.correct).length;
@@ -28,6 +42,13 @@ export const TwitterGamePhase = ({ topic, comments, onComplete }: TwitterGamePha
     }
   }, [foundAll]);
 
+  useEffect(() => {
+    if (lives <= 0) {
+      setIsRunning(false);
+      onGameOver();
+    }
+  }, [lives]);
+
   const handleGameEnd = (timerExpired: boolean) => {
     const results: GameResults = {
       totalBotted,
@@ -36,6 +57,7 @@ export const TwitterGamePhase = ({ topic, comments, onComplete }: TwitterGamePha
       missedBotted: totalBotted - correctGuesses,
       timeRemaining,
       timerExpired,
+      livesLost,
     };
     onComplete(results);
   };
@@ -54,20 +76,32 @@ export const TwitterGamePhase = ({ topic, comments, onComplete }: TwitterGamePha
       setTimeout(() => {
         setRemovedIds(prev => new Set([...prev, comment.id]));
       }, 500);
+    } else {
+      setLivesLost(prev => prev + 1);
+      onLiveLost();
     }
   };
 
   return (
     <TwitterLayout>
-      {/* Floating Timer */}
-      <div className="fixed top-4 right-4 z-50">
-        <Timer
-          duration={120}
-          isRunning={isRunning}
-          onComplete={() => handleGameEnd(true)}
-          onTick={setTimeRemaining}
-        />
-      </div>
+      {/* Progress Bar */}
+      <GameProgressBar
+        currentLevel={2}
+        level1Complete={true}
+        level2Complete={false}
+        level3Complete={false}
+        onLevelSelect={onLevelSelect}
+      />
+
+      {/* HUD with Timer and Lives */}
+      <GameHUD
+        timeRemaining={120}
+        lives={lives}
+        currentLevel={2}
+        isRunning={isRunning}
+        onTimeUp={() => handleGameEnd(true)}
+        onTick={setTimeRemaining}
+      />
 
       <TwitterFeed
         topic={topic}

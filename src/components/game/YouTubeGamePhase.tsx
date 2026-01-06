@@ -5,20 +5,33 @@ import { VideoPlayer } from '../youtube/VideoPlayer';
 import { VideoInfo } from '../youtube/VideoInfo';
 import { RecommendedVideos } from '../youtube/RecommendedVideos';
 import { CommentsSection } from '../youtube/CommentsSection';
-
-import { Timer } from './Timer';
+import { GameHUD } from './GameHUD';
+import { GameProgressBar } from './GameProgressBar';
 
 interface YouTubeGamePhaseProps {
   topic: string;
   comments: Comment[];
+  lives: number;
   onComplete: (results: GameResults) => void;
+  onLiveLost: () => void;
+  onGameOver: () => void;
+  onLevelSelect?: (level: 1 | 2 | 3) => void;
 }
 
-export const YouTubeGamePhase = ({ topic, comments, onComplete }: YouTubeGamePhaseProps) => {
+export const YouTubeGamePhase = ({ 
+  topic, 
+  comments, 
+  lives,
+  onComplete, 
+  onLiveLost,
+  onGameOver,
+  onLevelSelect 
+}: YouTubeGamePhaseProps) => {
   const [guesses, setGuesses] = useState<Record<string, PlayerGuess>>({});
   const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());
   const [timeRemaining, setTimeRemaining] = useState(120);
   const [isRunning, setIsRunning] = useState(true);
+  const [livesLost, setLivesLost] = useState(0);
 
   const totalBotted = comments.filter(c => c.isBotted).length;
   const correctGuesses = Object.values(guesses).filter(g => g.correct).length;
@@ -32,6 +45,13 @@ export const YouTubeGamePhase = ({ topic, comments, onComplete }: YouTubeGamePha
     }
   }, [foundAll]);
 
+  useEffect(() => {
+    if (lives <= 0) {
+      setIsRunning(false);
+      onGameOver();
+    }
+  }, [lives]);
+
   const handleGameEnd = (timerExpired: boolean) => {
     const results: GameResults = {
       totalBotted,
@@ -40,6 +60,7 @@ export const YouTubeGamePhase = ({ topic, comments, onComplete }: YouTubeGamePha
       missedBotted: totalBotted - correctGuesses,
       timeRemaining,
       timerExpired,
+      livesLost,
     };
     onComplete(results);
   };
@@ -58,6 +79,9 @@ export const YouTubeGamePhase = ({ topic, comments, onComplete }: YouTubeGamePha
       setTimeout(() => {
         setRemovedIds(prev => new Set([...prev, comment.id]));
       }, 500);
+    } else {
+      setLivesLost(prev => prev + 1);
+      onLiveLost();
     }
   };
 
@@ -65,17 +89,26 @@ export const YouTubeGamePhase = ({ topic, comments, onComplete }: YouTubeGamePha
 
   return (
     <YouTubeLayout>
-      {/* Floating Timer */}
-      <div className="fixed top-16 right-4 z-50">
-        <Timer
-          duration={120}
-          isRunning={isRunning}
-          onComplete={() => handleGameEnd(true)}
-          onTick={setTimeRemaining}
-        />
-      </div>
+      {/* Progress Bar */}
+      <GameProgressBar
+        currentLevel={1}
+        level1Complete={false}
+        level2Complete={false}
+        level3Complete={false}
+        onLevelSelect={onLevelSelect}
+      />
 
-      <div className="max-w-[1800px] mx-auto px-4 lg:px-6 py-6">
+      {/* HUD with Timer and Lives */}
+      <GameHUD
+        timeRemaining={120}
+        lives={lives}
+        currentLevel={1}
+        isRunning={isRunning}
+        onTimeUp={() => handleGameEnd(true)}
+        onTick={setTimeRemaining}
+      />
+
+      <div className="max-w-[1800px] mx-auto px-4 lg:px-6 py-6 pt-20">
         <div className="flex flex-col xl:flex-row gap-6">
           {/* Main content */}
           <div className="flex-1 min-w-0">

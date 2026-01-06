@@ -1,6 +1,6 @@
-import { Youtube, Twitter, CheckCircle, MessageCircle } from 'lucide-react';
+import { Youtube, Twitter, MessageCircle, CheckCircle } from 'lucide-react';
 
-interface LevelIndicatorProps {
+interface GameProgressBarProps {
   currentLevel: 1 | 2 | 3;
   level1Complete: boolean;
   level2Complete: boolean;
@@ -8,9 +8,15 @@ interface LevelIndicatorProps {
   onLevelSelect?: (level: 1 | 2 | 3) => void;
 }
 
-export const LevelIndicator = ({ currentLevel, level1Complete, level2Complete, level3Complete, onLevelSelect }: LevelIndicatorProps) => {
+export const GameProgressBar = ({ 
+  currentLevel, 
+  level1Complete, 
+  level2Complete, 
+  level3Complete,
+  onLevelSelect 
+}: GameProgressBarProps) => {
   return (
-    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-black/80 backdrop-blur-md rounded-full px-6 py-2 border border-white/10">
+    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-40 bg-black/80 backdrop-blur-md rounded-full px-6 py-2 border border-white/10">
       <div className="flex items-center gap-4">
         {/* Level 1 - YouTube */}
         <button 
@@ -24,7 +30,7 @@ export const LevelIndicator = ({ currentLevel, level1Complete, level2Complete, l
               <Youtube className="w-4 h-4 text-white" />
             )}
           </div>
-          <span className="text-sm text-white font-medium">YouTube</span>
+          <span className="text-sm text-white font-medium hidden sm:inline">YouTube</span>
         </button>
 
         {/* Connector 1 */}
@@ -35,14 +41,14 @@ export const LevelIndicator = ({ currentLevel, level1Complete, level2Complete, l
           onClick={() => onLevelSelect?.(2)}
           className={`flex items-center gap-2 transition-all hover:opacity-100 ${currentLevel === 2 ? 'opacity-100' : 'opacity-50'}`}
         >
-          <div className={`p-1.5 rounded-full ${level2Complete ? 'bg-green-500' : currentLevel === 2 ? 'bg-blue-500' : 'bg-gray-600'}`}>
+          <div className={`p-1.5 rounded-full ${level2Complete ? 'bg-green-500' : currentLevel === 2 ? 'bg-twitter-blue' : 'bg-gray-600'}`}>
             {level2Complete ? (
               <CheckCircle className="w-4 h-4 text-white" />
             ) : (
               <Twitter className="w-4 h-4 text-white" />
             )}
           </div>
-          <span className="text-sm text-white font-medium">Twitter/X</span>
+          <span className="text-sm text-white font-medium hidden sm:inline">Twitter/X</span>
         </button>
 
         {/* Connector 2 */}
@@ -60,7 +66,7 @@ export const LevelIndicator = ({ currentLevel, level1Complete, level2Complete, l
               <MessageCircle className="w-4 h-4 text-white" />
             )}
           </div>
-          <span className="text-sm text-white font-medium">WhatsApp</span>
+          <span className="text-sm text-white font-medium hidden sm:inline">WhatsApp</span>
         </button>
       </div>
     </div>

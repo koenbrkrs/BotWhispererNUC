@@ -43,6 +43,15 @@
     --wa-green-dark: 0 168 132;
     --wa-border: 38 50 56;
 
+    /* Retro Theme Colors */
+    --retro-red: 227 76 92;
+    --retro-green: 102 255 102;
+    --retro-blue: 100 149 237;
+    --retro-muted: 128 128 128;
+    --retro-button: 245 240 230;
+    --retro-button-text: 30 30 30;
+    --retro-button-hover: 220 215 205;
+
     --background: 0 0% 6%;
     --foreground: 0 0% 95%;
     --card: 0 0% 15%;
@@ -92,6 +101,10 @@
 }
 
 @layer components {
+  .font-retro {
+    font-family: 'DotGothic16', monospace;
+  }
+
   .timer-urgent {
     animation: timer-pulse 1s ease-in-out infinite;
   }
@@ -129,5 +142,25 @@
 
   .scrollbar-thin {
     scrollbar-width: thin;
+  }
+
+  /* Retro slider styling */
+  .slider-retro::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: rgb(var(--retro-red));
+    border-radius: 2px;
+    cursor: pointer;
+  }
+
+  .slider-retro::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: rgb(var(--retro-red));
+    border-radius: 2px;
+    cursor: pointer;
+    border: none;
   }
 }

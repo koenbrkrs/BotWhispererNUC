@@ -7,26 +7,38 @@ export interface Comment {
   isBotted: boolean;
 }
 
+export interface BotConfig {
+  friendlyAggressive: number; // 0 = Friendly, 100 = Aggressive
+  logicalIllogical: number; // 0 = Logical, 100 = Illogical
+  humorSerious: number; // 0 = Humor, 100 = Serious
+  sarcasmDirect: number; // 0 = Sarcasm, 100 = Direct
+  openClosed: number; // 0 = Open, 100 = Closed
+  minimalVerbose: number; // 0 = Minimal, 100 = Verbose
+  emojiAmount: number; // 0 = None, 100 = Heavy
+  topic: string;
+}
+
+// Keep old interfaces for backwards compatibility
 export interface OpinionConfig {
-  stanceStrength: number; // 0-100
-  positivity: number; // 0-100
+  stanceStrength: number;
+  positivity: number;
   category: 'pro' | 'con' | 'agree' | 'disagree' | 'support' | 'oppose';
   theme: 'political' | 'environmental' | 'tech' | 'social' | 'economic' | 'cultural';
 }
 
 export interface StyleConfig {
-  sarcasm: number; // 0-100
-  dismissiveness: number; // 0-100
-  logic: number; // 0-100
-  bulletPoints: number; // 0-100
-  emotionalIntensity: number; // 0-100
-  dramaticFlair: number; // 0-100
-  postLength: number; // 0-100 (0 = long, 100 = short/meme-like)
-  memeStyle: number; // 0-100
-  pseudoIntellectual: number; // 0-100
-  jargonUsage: number; // 0-100
-  supportiveness: number; // 0-100
-  agreeableness: number; // 0-100
+  sarcasm: number;
+  dismissiveness: number;
+  logic: number;
+  bulletPoints: number;
+  emotionalIntensity: number;
+  dramaticFlair: number;
+  postLength: number;
+  memeStyle: number;
+  pseudoIntellectual: number;
+  jargonUsage: number;
+  supportiveness: number;
+  agreeableness: number;
 }
 
 export interface GameConfig {
@@ -35,6 +47,7 @@ export interface GameConfig {
   botStyle: string;
   opinionConfig: OpinionConfig;
   styleConfig: StyleConfig;
+  botConfig?: BotConfig;
 }
 
 export interface PlayerGuess {
@@ -49,6 +62,7 @@ export interface GameResults {
   missedBotted: number;
   timeRemaining: number;
   timerExpired: boolean;
+  livesLost?: number;
 }
 
 export type GamePhase = 'setup' | 'handoff' | 'playing' | 'reveal';
