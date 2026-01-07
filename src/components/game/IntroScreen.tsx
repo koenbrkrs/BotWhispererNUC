@@ -1,19 +1,35 @@
+import { useState, useEffect } from 'react';
+
 interface IntroScreenProps {
   onStart: () => void;
   onSetupBots: () => void;
+  hasSetupBots: boolean;
 }
 
-export const IntroScreen = ({ onStart, onSetupBots }: IntroScreenProps) => {
+export const IntroScreen = ({ onStart, onSetupBots, hasSetupBots }: IntroScreenProps) => {
+  const [dots, setDots] = useState('.');
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDots(prev => {
+        if (prev === '.') return '..';
+        if (prev === '..') return '...';
+        return '.';
+      });
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#1a1a1a] to-[#0a0a0a] flex flex-col items-center justify-center p-8 font-retro">
       <div className="max-w-4xl w-full text-center space-y-12">
         {/* Main Title */}
         <div className="space-y-2">
           <h1 className="text-4xl md:text-6xl lg:text-7xl text-retro-red leading-tight">
-            <span className="border-b-4 border-retro-blue">Your mission.</span>
+            Your mission.
           </h1>
           <h2 className="text-4xl md:text-6xl lg:text-7xl text-retro-red leading-tight pl-8 md:pl-16">
-            Spot the bots.
+            Spot the bots{dots}
             <span className="block text-right text-retro-red text-2xl md:text-3xl mt-2">
               ////////////////////////
             </span>
@@ -30,18 +46,21 @@ export const IntroScreen = ({ onStart, onSetupBots }: IntroScreenProps) => {
 
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
-          <button
-            onClick={onStart}
-            className="px-8 py-3 bg-retro-button text-retro-button-text text-lg hover:bg-retro-button-hover transition-colors border-2 border-retro-button-text/20"
-          >
-            Start
-          </button>
-          <button
-            onClick={onSetupBots}
-            className="px-8 py-3 bg-retro-button text-retro-button-text text-lg hover:bg-retro-button-hover transition-colors border-2 border-retro-button-text/20"
-          >
-            Setup Bots
-          </button>
+          {hasSetupBots ? (
+            <button
+              onClick={onStart}
+              className="px-8 py-3 bg-retro-button text-retro-button-text text-lg hover:bg-retro-button-hover transition-colors border-2 border-retro-button-text/20"
+            >
+              Start
+            </button>
+          ) : (
+            <button
+              onClick={onSetupBots}
+              className="px-8 py-3 bg-retro-button text-retro-button-text text-lg hover:bg-retro-button-hover transition-colors border-2 border-retro-button-text/20"
+            >
+              Setup Bots
+            </button>
+          )}
         </div>
       </div>
 
