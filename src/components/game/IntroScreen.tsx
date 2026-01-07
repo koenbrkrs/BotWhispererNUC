@@ -29,7 +29,7 @@ export const IntroScreen = ({ onStart, onSetupBots, hasSetupBots }: IntroScreenP
             Your mission.
           </h1>
           <h2 className="text-4xl md:text-6xl lg:text-7xl text-retro-red leading-tight pl-8 md:pl-16">
-            Spot the bots{dots}
+            Spot the bots<span className="inline-block w-[1.5ch]">{dots}</span>
             <span className="block text-right text-retro-red text-2xl md:text-3xl mt-2">
               ////////////////////////
             </span>

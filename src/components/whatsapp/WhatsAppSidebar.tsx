@@ -5,10 +5,10 @@ interface WhatsAppSidebarProps {
 }
 
 const dummyChats = [
-  { name: 'Family Group', lastMessage: 'Mom: See you tomorrow!', time: '10:30 AM', unread: 3, isGroup: true },
+  { name: 'Family Group', lastMessage: 'Mom: See you tomorrow!', time: '10:30 AM', unread: 0, isGroup: true },
   { name: 'Work Team', lastMessage: 'Boss: Meeting at 3pm', time: '9:45 AM', unread: 0, isGroup: true },
   { name: 'John Doe', lastMessage: 'Thanks for the help!', time: 'Yesterday', unread: 0, isGroup: false },
-  { name: 'Alice Smith', lastMessage: 'Photo', time: 'Yesterday', unread: 1, isGroup: false },
+  { name: 'Alice Smith', lastMessage: 'Photo', time: 'Yesterday', unread: 0, isGroup: false },
   { name: 'College Friends', lastMessage: 'Mike: 😂😂', time: 'Tuesday', unread: 0, isGroup: true },
   { name: 'David Wilson', lastMessage: 'Sounds good!', time: 'Monday', unread: 0, isGroup: false },
 ];
@@ -68,13 +68,10 @@ export const WhatsAppSidebar = ({ groupName }: WhatsAppSidebarProps) => {
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between">
               <span className="font-medium text-wa-text-primary truncate">{groupName}</span>
-              <span className="text-xs text-wa-green">Now</span>
+              <span className="text-xs text-wa-text-secondary">Now</span>
             </div>
             <div className="flex items-center justify-between">
               <p className="text-sm text-wa-text-secondary truncate">Tap to view discussion</p>
-              <span className="bg-wa-green text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                50+
-              </span>
             </div>
           </div>
         </div>
