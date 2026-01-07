@@ -84,14 +84,6 @@ export const WhatsAppGamePhase = ({
 
   return (
     <WhatsAppLayout groupName={topic}>
-      {/* Progress Bar */}
-      <GameProgressBar
-        currentLevel={3}
-        level1Complete={true}
-        level2Complete={true}
-        level3Complete={false}
-        onLevelSelect={onLevelSelect}
-      />
 
       {/* HUD with Timer and Lives */}
       <GameHUD
