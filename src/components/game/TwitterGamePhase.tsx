@@ -84,15 +84,6 @@ export const TwitterGamePhase = ({
 
   return (
     <TwitterLayout>
-      {/* Progress Bar */}
-      <GameProgressBar
-        currentLevel={2}
-        level1Complete={true}
-        level2Complete={false}
-        level3Complete={false}
-        onLevelSelect={onLevelSelect}
-      />
-
       {/* HUD with Timer and Lives */}
       <GameHUD
         timeRemaining={120}

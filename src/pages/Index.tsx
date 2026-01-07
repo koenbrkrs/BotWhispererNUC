@@ -69,6 +69,7 @@ const Index = () => {
   const [phase, setPhase] = useState<GamePhase>('intro');
   const [botConfig, setBotConfig] = useState<BotConfig>(DEFAULT_BOT_CONFIG);
   const [showSetupModal, setShowSetupModal] = useState(false);
+  const [hasSetupBots, setHasSetupBots] = useState(false);
   
   const [lives, setLives] = useState(3);
   const [youtubeComments, setYoutubeComments] = useState<Comment[]>([]);
@@ -102,6 +103,7 @@ const Index = () => {
   const handleSetupConfirm = (config: BotConfig) => {
     setBotConfig(config);
     setShowSetupModal(false);
+    setHasSetupBots(true);
   };
 
   const handleLoadingComplete = () => {
@@ -186,6 +188,7 @@ const Index = () => {
           <IntroScreen 
             onStart={handleStart}
             onSetupBots={() => setShowSetupModal(true)}
+            hasSetupBots={hasSetupBots}
           />
           <BotSetupModal
             isOpen={showSetupModal}
