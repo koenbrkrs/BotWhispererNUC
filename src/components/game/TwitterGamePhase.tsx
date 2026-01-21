@@ -3,7 +3,8 @@ import { Comment, PlayerGuess, GameResults } from '@/types/game';
 import { TwitterLayout } from '../twitter/TwitterLayout';
 import { TwitterFeed } from '../twitter/TwitterFeed';
 import { GameHUD } from './GameHUD';
-import { GameProgressBar } from './GameProgressBar';
+import { UrgencyBorder } from './UrgencyBorder';
+import { formatTopicForTwitter } from '@/utils/topicFormatter';
 
 interface TwitterGamePhaseProps {
   topic: string;
@@ -82,8 +83,17 @@ export const TwitterGamePhase = ({
     }
   };
 
+  const twitterTopic = formatTopicForTwitter(topic);
+
   return (
     <TwitterLayout>
+      {/* Urgency Border */}
+      <UrgencyBorder 
+        timeRemaining={timeRemaining} 
+        currentLevel={2} 
+        isRunning={isRunning} 
+      />
+
       {/* HUD with Timer and Lives */}
       <GameHUD
         timeRemaining={120}
@@ -95,7 +105,7 @@ export const TwitterGamePhase = ({
       />
 
       <TwitterFeed
-        topic={topic}
+        topic={twitterTopic}
         comments={comments}
         mode="playing"
         guesses={guesses}

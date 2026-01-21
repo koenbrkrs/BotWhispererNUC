@@ -3,7 +3,8 @@ import { Comment, PlayerGuess, GameResults } from '@/types/game';
 import { WhatsAppLayout } from '../whatsapp/WhatsAppLayout';
 import { WhatsAppChat } from '../whatsapp/WhatsAppChat';
 import { GameHUD } from './GameHUD';
-import { GameProgressBar } from './GameProgressBar';
+import { UrgencyBorder } from './UrgencyBorder';
+import { formatTopicForWhatsApp } from '@/utils/topicFormatter';
 
 interface WhatsAppGamePhaseProps {
   topic: string;
@@ -82,8 +83,16 @@ export const WhatsAppGamePhase = ({
     }
   };
 
+  const groupName = formatTopicForWhatsApp(topic);
+
   return (
-    <WhatsAppLayout groupName={topic}>
+    <WhatsAppLayout groupName={groupName}>
+      {/* Urgency Border */}
+      <UrgencyBorder 
+        timeRemaining={timeRemaining} 
+        currentLevel={3} 
+        isRunning={isRunning} 
+      />
 
       {/* HUD with Timer and Lives */}
       <GameHUD
@@ -97,7 +106,7 @@ export const WhatsAppGamePhase = ({
 
       {/* Load ALL comments statically - no dynamic pop-ups */}
       <WhatsAppChat
-        groupName={topic}
+        groupName={groupName}
         comments={comments}
         mode="playing"
         guesses={guesses}
