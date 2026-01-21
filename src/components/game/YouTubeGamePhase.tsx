@@ -7,6 +7,8 @@ import { RecommendedVideos } from '../youtube/RecommendedVideos';
 import { CommentsSection } from '../youtube/CommentsSection';
 import { GameHUD } from './GameHUD';
 import { GameProgressBar } from './GameProgressBar';
+import { UrgencyBorder } from './UrgencyBorder';
+import { formatTopicForYouTube } from '@/utils/topicFormatter';
 
 interface YouTubeGamePhaseProps {
   topic: string;
@@ -85,10 +87,17 @@ export const YouTubeGamePhase = ({
     }
   };
 
-  const videoTitle = `${topic} - The Discussion Everyone Is Talking About | Full Analysis 2025`;
+  const videoTitle = formatTopicForYouTube(topic);
 
   return (
     <YouTubeLayout>
+      {/* Urgency Border */}
+      <UrgencyBorder 
+        timeRemaining={timeRemaining} 
+        currentLevel={1} 
+        isRunning={isRunning} 
+      />
+
       {/* Progress Bar */}
       <GameProgressBar
         currentLevel={1}

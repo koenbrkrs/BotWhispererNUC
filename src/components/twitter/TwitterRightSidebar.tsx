@@ -1,12 +1,4 @@
-import { Search, MoreHorizontal } from 'lucide-react';
-
-const trends = [
-  { category: 'Technology · Trending', topic: '#AIRevolution', posts: '125K' },
-  { category: 'Sports · Trending', topic: 'Champions League', posts: '89K' },
-  { category: 'Politics · Trending', topic: '#Election2025', posts: '234K' },
-  { category: 'Entertainment · Trending', topic: 'New Movie Release', posts: '56K' },
-  { category: 'Gaming · Trending', topic: '#GTA6', posts: '445K' },
-];
+import { Search } from 'lucide-react';
 
 const whoToFollow = [
   { name: 'Tech News Daily', handle: '@technewsdaily', avatar: 'https://i.pravatar.cc/100?img=1' },
@@ -27,28 +19,6 @@ export const TwitterRightSidebar = () => {
             className="w-full bg-tw-bg-secondary rounded-full py-3 pl-12 pr-4 text-sm text-tw-text-primary placeholder:text-tw-text-secondary focus:outline-none focus:ring-2 focus:ring-tw-blue focus:bg-transparent"
           />
         </div>
-      </div>
-
-      {/* Trends */}
-      <div className="bg-tw-bg-secondary rounded-2xl mb-4">
-        <h2 className="text-xl font-bold text-tw-text-primary p-4">What's happening</h2>
-        {trends.map((trend, i) => (
-          <div key={i} className="px-4 py-3 hover:bg-tw-bg-hover cursor-pointer transition-colors">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-xs text-tw-text-secondary">{trend.category}</p>
-                <p className="font-bold text-tw-text-primary">{trend.topic}</p>
-                <p className="text-xs text-tw-text-secondary">{trend.posts} posts</p>
-              </div>
-              <button className="p-1.5 hover:bg-tw-blue/20 rounded-full transition-colors">
-                <MoreHorizontal className="w-4 h-4 text-tw-text-secondary" />
-              </button>
-            </div>
-          </div>
-        ))}
-        <button className="w-full p-4 text-left text-tw-blue hover:bg-tw-bg-hover rounded-b-2xl transition-colors">
-          Show more
-        </button>
       </div>
 
       {/* Who to follow */}

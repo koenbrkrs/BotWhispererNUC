@@ -144,7 +144,7 @@ const Index = () => {
   };
 
   const handleRestartComplete = () => {
-    // Reset all state
+    // Reset all state including bot setup
     setLives(3);
     totalTimeUsedRef.current = 0;
     setYoutubeResults(null);
@@ -153,6 +153,7 @@ const Index = () => {
     setYoutubeComments([]);
     setTwitterComments([]);
     setWhatsappComments([]);
+    setHasSetupBots(false); // Reset so user can change bot settings again
     setPhase('intro');
   };
 

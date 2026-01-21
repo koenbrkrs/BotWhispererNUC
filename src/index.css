@@ -133,6 +133,21 @@
     animation: fade-in 0.3s ease-out;
   }
 
+  @keyframes urgency-pulse {
+    0%, 100% { 
+      opacity: 0.4;
+      transform: scale(1);
+    }
+    50% { 
+      opacity: 0.8;
+      transform: scale(1.002);
+    }
+  }
+
+  .animate-urgency-pulse {
+    animation: urgency-pulse 1s ease-in-out infinite;
+  }
+
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;

@@ -113,17 +113,7 @@ export const VideoInfo = ({ title, showSetup, onSetupClick }: VideoInfoProps) =>
           <span>3 days ago</span>
         </div>
         <p className={`text-sm text-yt-text-primary mt-1 ${showDescription ? '' : 'line-clamp-2'}`}>
-          Today we're diving deep into one of the most debated topics of our time. Join us as we explore different perspectives, analyze arguments from both sides, and try to understand why this discussion matters so much to so many people. Don't forget to like and subscribe for more thought-provoking content!
-          {showDescription && (
-            <>
-              <br /><br />
-              🔔 Subscribe for more content<br />
-              👍 Like if you enjoyed<br />
-              💬 Comment your thoughts below<br />
-              <br />
-              #debate #discussion #trending #viral
-            </>
-          )}
+          Today we're diving deep into one of the most debated topics of our time. Join us as we explore different perspectives, analyze arguments from both sides, and try to understand why this discussion matters so much to so many people.
         </p>
         {!showDescription && (
           <span className="text-sm font-medium text-yt-text-primary mt-1 inline-block">...more</span>

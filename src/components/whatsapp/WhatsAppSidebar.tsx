@@ -7,10 +7,6 @@ interface WhatsAppSidebarProps {
 const dummyChats = [
   { name: 'Family Group', lastMessage: 'Mom: See you tomorrow!', time: '10:30 AM', unread: 0, isGroup: true },
   { name: 'Work Team', lastMessage: 'Boss: Meeting at 3pm', time: '9:45 AM', unread: 0, isGroup: true },
-  { name: 'John Doe', lastMessage: 'Thanks for the help!', time: 'Yesterday', unread: 0, isGroup: false },
-  { name: 'Alice Smith', lastMessage: 'Photo', time: 'Yesterday', unread: 0, isGroup: false },
-  { name: 'College Friends', lastMessage: 'Mike: 😂😂', time: 'Tuesday', unread: 0, isGroup: true },
-  { name: 'David Wilson', lastMessage: 'Sounds good!', time: 'Monday', unread: 0, isGroup: false },
 ];
 
 export const WhatsAppSidebar = ({ groupName }: WhatsAppSidebarProps) => {
