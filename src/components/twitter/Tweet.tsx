@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MessageCircle, Repeat2, Heart, Share, MoreHorizontal, BarChart2 } from 'lucide-react';
 import { Comment } from '@/types/game';
+import { useBinaryDissolve } from '@/hooks/useBinaryDissolve';
 
 interface TweetProps {
   comment: Comment;
@@ -35,6 +36,14 @@ export const Tweet = ({
 }: TweetProps) => {
   const [liked, setLiked] = useState(false);
   const [retweeted, setRetweeted] = useState(false);
+  const { containerRef, triggerDissolve } = useBinaryDissolve('twitter');
+
+  // Trigger dissolve animation when correctly guessed
+  useEffect(() => {
+    if (isGuessed && isCorrect) {
+      triggerDissolve();
+    }
+  }, [isGuessed, isCorrect, triggerDissolve]);
 
   const hash = hashCode(comment.id);
   const likes = (hash % 5000) + 10;
@@ -61,11 +70,12 @@ export const Tweet = ({
 
   return (
     <article
+      ref={containerRef}
       onClick={handleClick}
       className={`px-4 py-3 border-b border-tw-border hover:bg-tw-bg-hover transition-all cursor-pointer ${
         mode === 'playing' && isGuessed
           ? isCorrect
-            ? 'bg-green-500/20 animate-pulse'
+            ? ''
             : 'bg-red-500/20 animate-shake'
           : ''
       } ${

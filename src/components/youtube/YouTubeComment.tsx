@@ -1,7 +1,8 @@
 import { ThumbsUp, ThumbsDown, MoreVertical } from 'lucide-react';
 import { Comment } from '@/types/game';
 import { cn } from '@/lib/utils';
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
+import { useBinaryDissolve } from '@/hooks/useBinaryDissolve';
 
 // Generate a stable hash from string for consistent random numbers
 const hashCode = (str: string): number => {
@@ -34,6 +35,14 @@ export const YouTubeComment = ({
   onClick,
   onToggle,
 }: YouTubeCommentProps) => {
+  const { containerRef, triggerDissolve } = useBinaryDissolve('youtube');
+
+  // Trigger dissolve animation when correctly guessed
+  useEffect(() => {
+    if (isGuessed && isCorrect) {
+      triggerDissolve();
+    }
+  }, [isGuessed, isCorrect, triggerDissolve]);
   // Generate stable like count based on comment id
   const likeCount = useMemo(() => {
     return (hashCode(comment.id) % 500) + 1;
@@ -53,13 +62,13 @@ export const YouTubeComment = ({
 
   return (
     <div
+      ref={containerRef}
       className={cn(
         "flex gap-3 py-3 px-2 rounded-lg cursor-pointer transition-all duration-300 group",
         mode === 'setup' && "hover:bg-yt-hover",
         mode === 'setup' && isToggled && "bg-yt-red/20 border border-yt-red/50",
         mode === 'playing' && "hover:bg-yt-hover",
         mode === 'playing' && isGuessed && !isCorrect && "bg-red-900/40 border border-red-500/50 animate-shake",
-        mode === 'playing' && isGuessed && isCorrect && "opacity-0 scale-95 transition-all duration-500",
         mode === 'reveal' && comment.isBotted && "bg-yt-red/10 border border-yt-red/30",
         mode === 'reveal' && !comment.isBotted && "bg-green-900/10 border border-green-500/30"
       )}
