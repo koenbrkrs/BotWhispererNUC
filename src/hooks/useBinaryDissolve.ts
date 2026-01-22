@@ -16,64 +16,73 @@ export const useBinaryDissolve = (platform: Platform) => {
     if (!container) return;
 
     const color = PLATFORM_COLORS[platform];
-    const rect = container.getBoundingClientRect();
-    const numDigits = Math.floor(Math.random() * 16) + 15; // 15-30 digits
+    const numDigits = Math.floor(Math.random() * 21) + 30; // 30-50 digits
+
+    // Set container styles
+    container.style.position = 'relative';
+    container.style.overflow = 'hidden';
 
     // Create binary digits
     for (let i = 0; i < numDigits; i++) {
       const digit = document.createElement('span');
       digit.textContent = Math.random() > 0.5 ? '1' : '0';
+      
+      const fontSize = Math.floor(Math.random() * 7) + 12; // 12-18px
+      const startX = Math.random() * 100;
+      const startY = Math.random() * 50;
+      
       digit.style.cssText = `
         position: absolute;
-        font-family: monospace;
-        font-size: ${Math.floor(Math.random() * 7) + 8}px;
-        font-weight: bold;
+        font-family: 'Consolas', 'Courier New', monospace;
+        font-size: ${fontSize}px;
+        font-weight: 700;
         color: ${color};
-        left: ${Math.random() * 100}%;
-        top: ${Math.random() * 60}%;
-        opacity: 0;
+        left: ${startX}%;
+        top: ${startY}%;
+        opacity: 1;
         pointer-events: none;
         z-index: 10;
-        text-shadow: 0 0 8px ${color};
+        text-shadow: 0 0 12px ${color}, 0 0 24px ${color};
+        box-shadow: 0 0 12px ${color};
       `;
       
-      container.style.position = 'relative';
-      container.style.overflow = 'hidden';
       container.appendChild(digit);
 
-      // Animate the digit
-      const delay = Math.random() * 300;
-      const duration = 800 + Math.random() * 400;
-      const horizontalDrift = (Math.random() - 0.5) * 40;
+      // Animation timing
+      const delay = Math.random() * 400;
+      const duration = 1800 + Math.random() * 400; // 1.8-2.2 seconds
+      const fallDistance = 80 + Math.random() * 70; // 80-150px
+      const horizontalDrift = (Math.random() - 0.5) * 60;
 
+      // Main falling animation
       digit.animate([
         { 
-          opacity: 0, 
+          opacity: 1, 
           transform: 'translateY(0) translateX(0)',
         },
         { 
           opacity: 1, 
-          transform: `translateY(10px) translateX(${horizontalDrift * 0.3}px)`,
+          transform: `translateY(${fallDistance * 0.2}px) translateX(${horizontalDrift * 0.2}px)`,
           offset: 0.2 
         },
         { 
-          opacity: 1, 
-          transform: `translateY(30px) translateX(${horizontalDrift * 0.6}px)`,
+          opacity: 0.9, 
+          transform: `translateY(${fallDistance * 0.4}px) translateX(${horizontalDrift * 0.4}px)`,
           offset: 0.4 
         },
         { 
-          opacity: 0.8, 
-          transform: `translateY(50px) translateX(${horizontalDrift * 0.8}px)`,
+          opacity: 0.7, 
+          transform: `translateY(${fallDistance * 0.6}px) translateX(${horizontalDrift * 0.6}px)`,
           offset: 0.6 
         },
         { 
-          opacity: 0.5, 
-          transform: `translateY(70px) translateX(${horizontalDrift}px)`,
+          opacity: 0.4, 
+          transform: `translateY(${fallDistance * 0.8}px) translateX(${horizontalDrift * 0.8}px)`,
           offset: 0.8 
         },
         { 
           opacity: 0, 
-          transform: `translateY(${rect.height + 20}px) translateX(${horizontalDrift}px)`,
+          transform: `translateY(${fallDistance}px) translateX(${horizontalDrift}px)`,
         },
       ], {
         duration,
@@ -82,19 +91,19 @@ export const useBinaryDissolve = (platform: Platform) => {
         fill: 'forwards',
       });
 
-      // Flicker effect
+      // Slow flicker effect - pulses twice during fall
       const flickerKeyframes = [
         { opacity: 1 },
-        { opacity: 0.3 },
+        { opacity: 0.4 },
         { opacity: 1 },
-        { opacity: 0.5 },
+        { opacity: 0.4 },
         { opacity: 1 },
       ];
       
       digit.animate(flickerKeyframes, {
-        duration: 200,
+        duration: duration * 0.8,
         delay: delay + 100,
-        iterations: 3,
+        easing: 'ease-in-out',
       });
 
       // Remove digit after animation
@@ -103,8 +112,8 @@ export const useBinaryDissolve = (platform: Platform) => {
       }, duration + delay + 100);
     }
 
-    // Fade out the content
-    container.style.transition = 'opacity 1s ease-out, transform 1s ease-out';
+    // Fade out the content (keep at ~1.5s as requested)
+    container.style.transition = 'opacity 1.5s ease-out, transform 1.5s ease-out';
     container.style.opacity = '0';
     container.style.transform = 'scale(0.95)';
   }, [platform]);
