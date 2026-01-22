@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { Comment, PlayerGuess } from '@/types/game';
 import { Check, CheckCheck, Bot } from 'lucide-react';
+import { useBinaryDissolve } from '@/hooks/useBinaryDissolve';
 
 interface WhatsAppMessageProps {
   comment: Comment;
@@ -18,10 +20,18 @@ export const WhatsAppMessage = ({
   avatarUrl,
   nameColor,
 }: WhatsAppMessageProps) => {
+  const { containerRef, triggerDissolve } = useBinaryDissolve('whatsapp');
   const isRevealed = mode === 'reveal';
   const isBot = comment.isBotted;
   const wasGuessed = guess?.guessed;
   const wasCorrect = guess?.correct;
+
+  // Trigger dissolve animation when correctly guessed
+  useEffect(() => {
+    if (wasGuessed && wasCorrect) {
+      triggerDissolve();
+    }
+  }, [wasGuessed, wasCorrect, triggerDissolve]);
 
   // Determine bubble style based on game state
   let bubbleClass = 'bg-wa-bubble-incoming';
@@ -30,7 +40,7 @@ export const WhatsAppMessage = ({
   if (mode === 'playing') {
     if (wasGuessed) {
       bubbleClass = wasCorrect
-        ? 'bg-green-900/40 border border-green-500/50'
+        ? 'bg-wa-bubble-incoming'
         : 'bg-red-900/40 border border-red-500/50 animate-shake';
     }
   } else if (isRevealed && isBot) {
@@ -40,6 +50,7 @@ export const WhatsAppMessage = ({
 
   return (
     <div
+      ref={containerRef}
       className={`flex gap-2 group max-w-[85%] ${mode === 'playing' && !wasGuessed ? 'cursor-pointer' : ''}`}
       onClick={mode === 'playing' && !wasGuessed ? onClick : undefined}
     >

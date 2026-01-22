@@ -80,7 +80,7 @@ export const YouTubeGamePhase = ({
     if (isCorrect) {
       setTimeout(() => {
         setRemovedIds(prev => new Set([...prev, comment.id]));
-      }, 500);
+      }, 1200);
     } else {
       setLivesLost(prev => prev + 1);
       onLiveLost();
