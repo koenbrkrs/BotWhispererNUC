@@ -21,8 +21,8 @@ export const useBinaryDissolve = (platform: Platform) => {
     container.style.position = 'relative';
     container.style.overflow = 'hidden';
 
-    // Linear fade from 100% to 0% over 3 seconds
-    container.style.transition = 'opacity 3s linear';
+    // Linear fade from 100% to 0% over 2 seconds
+    container.style.transition = 'opacity 2s linear';
     container.style.opacity = '0';
 
     // Number of rain columns
@@ -40,8 +40,8 @@ export const useBinaryDissolve = (platform: Platform) => {
       const streamLength = Math.floor(Math.random() * 15) + 8; // 8-23 characters
       const stream = document.createElement('div');
       const xPos = col * columnWidth + (Math.random() * 8 - 4);
-      const startDelay = Math.random() * 400;
-      const duration = 2700 + Math.random() * 1000; // 2.7-3.7 seconds
+      const startDelay = Math.random() * 250;
+      const duration = 1800 + Math.random() * 600; // 1.8-2.4 seconds
       
       stream.style.cssText = `
         position: absolute;
@@ -105,7 +105,7 @@ export const useBinaryDissolve = (platform: Platform) => {
       // Remove stream after animation
       setTimeout(() => {
         stream.remove();
-      }, duration + startDelay + 500);
+      }, duration + startDelay + 300);
     }
 
     // Fade all streams to 70% opacity in the last second
@@ -113,7 +113,7 @@ export const useBinaryDissolve = (platform: Platform) => {
       streams.forEach(stream => {
         stream.style.opacity = '0.7';
       });
-    }, 2000); // Start fading streams at 2s (1s before end)
+    }, 1000); // Start fading streams at 1s (1s before end)
 
   }, [platform]);
 
