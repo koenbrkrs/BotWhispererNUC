@@ -21,13 +21,16 @@ export const useBinaryDissolve = (platform: Platform) => {
     container.style.position = 'relative';
     container.style.overflow = 'hidden';
 
-    // Fade content to 50% immediately
-    container.style.transition = 'opacity 0.3s ease-out';
-    container.style.opacity = '0.5';
+    // Linear fade from 100% to 0% over 3 seconds
+    container.style.transition = 'opacity 3s linear';
+    container.style.opacity = '0';
 
     // Number of rain columns
     const columnWidth = 16;
     const numColumns = Math.ceil(rect.width / columnWidth) + 2;
+    
+    // Store all streams for the fade effect at end
+    const streams: HTMLElement[] = [];
     
     // Create rain streams
     for (let col = 0; col < numColumns; col++) {
@@ -38,7 +41,7 @@ export const useBinaryDissolve = (platform: Platform) => {
       const stream = document.createElement('div');
       const xPos = col * columnWidth + (Math.random() * 8 - 4);
       const startDelay = Math.random() * 400;
-      const duration = 2700 + Math.random() * 1000; // 2.7-3.7 seconds (50% longer)
+      const duration = 2700 + Math.random() * 1000; // 2.7-3.7 seconds
       
       stream.style.cssText = `
         position: absolute;
@@ -49,6 +52,8 @@ export const useBinaryDissolve = (platform: Platform) => {
         align-items: center;
         z-index: 10;
         pointer-events: none;
+        opacity: 1;
+        transition: opacity 0.3s ease-out;
       `;
 
       // Create characters in the stream with fade trail - ALL in platform color
@@ -82,6 +87,7 @@ export const useBinaryDissolve = (platform: Platform) => {
       }
 
       container.appendChild(stream);
+      streams.push(stream);
 
       // Animate falling
       const fallDistance = rect.height + (streamLength * 16) + 20;
@@ -99,14 +105,15 @@ export const useBinaryDissolve = (platform: Platform) => {
       // Remove stream after animation
       setTimeout(() => {
         stream.remove();
-      }, duration + startDelay + 100);
+      }, duration + startDelay + 500);
     }
 
-    // Fade out completely AFTER most of the animation plays (delayed)
+    // Fade all streams to 70% opacity in the last second
     setTimeout(() => {
-      container.style.transition = 'opacity 1s ease-out';
-      container.style.opacity = '0';
-    }, 1800); // Wait 1.8s before fading to 0
+      streams.forEach(stream => {
+        stream.style.opacity = '0.7';
+      });
+    }, 2000); // Start fading streams at 2s (1s before end)
 
   }, [platform]);
 
