@@ -1,3 +1,6 @@
+// Dimmed color for non-interactive elements
+const dimmedColor = '#787878';
+
 const recommendedVideos = [
   { id: 1, title: "You Won't Believe What Happened Next - Full Story", channel: "StoryTime", views: "2.3M views", time: "2 days ago", duration: "15:42" },
   { id: 2, title: "10 Things Nobody Tells You About This Topic", channel: "TruthSeeker", views: "892K views", time: "1 week ago", duration: "22:15" },
@@ -27,27 +30,39 @@ export const RecommendedVideos = () => {
       {recommendedVideos.map((video, index) => (
         <div 
           key={video.id}
-          className="flex gap-2 p-1 rounded-xl hover:bg-yt-hover cursor-pointer transition-colors group"
+          className="flex gap-2 p-1 rounded-xl cursor-not-allowed"
         >
-          {/* Thumbnail */}
+          {/* Grey placeholder thumbnail */}
           <div className="relative flex-shrink-0 w-40 md:w-44">
-            <div className="aspect-video rounded-lg overflow-hidden bg-gray-600">
-              {/* Grey placeholder thumbnail */}
+            <div className="aspect-video rounded-lg overflow-hidden bg-[#3a3a3a]">
+              {/* Grey placeholder */}
             </div>
-            <span className="absolute bottom-1 right-1 bg-black/80 text-white text-xs px-1 py-0.5 rounded font-medium">
+            <span 
+              className="absolute bottom-1 right-1 text-white text-xs px-1 py-0.5 rounded font-medium"
+              style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}
+            >
               {video.duration}
             </span>
           </div>
           
-          {/* Info */}
+          {/* Info - all dimmed */}
           <div className="flex-1 min-w-0 py-0.5">
-            <h3 className="text-sm font-medium text-yt-text-primary line-clamp-2 leading-snug mb-1">
+            <h3 
+              className="text-sm font-medium line-clamp-2 leading-snug mb-1"
+              style={{ color: dimmedColor }}
+            >
               {video.title}
             </h3>
-            <p className="text-xs text-yt-text-secondary hover:text-yt-text-primary transition-colors">
+            <p 
+              className="text-xs"
+              style={{ color: dimmedColor }}
+            >
               {video.channel}
             </p>
-            <p className="text-xs text-yt-text-secondary">
+            <p 
+              className="text-xs"
+              style={{ color: dimmedColor }}
+            >
               {video.views} • {video.time}
             </p>
           </div>

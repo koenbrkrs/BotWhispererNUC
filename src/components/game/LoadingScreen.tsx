@@ -4,7 +4,7 @@ interface LoadingScreenProps {
   onComplete: () => void;
   message?: string;
   subMessage?: string;
-  color?: 'red' | 'green';
+  color?: 'red' | 'green' | 'blue';
 }
 
 export const LoadingScreen = ({ 
@@ -36,23 +36,37 @@ export const LoadingScreen = ({
     return () => clearInterval(timer);
   }, [onComplete]);
 
-  const colorClass = color === 'green' ? 'text-retro-green' : 'text-retro-red';
-  const bgColorClass = color === 'green' ? 'bg-retro-green' : 'bg-retro-red';
-  const borderColorClass = color === 'green' ? 'border-retro-green' : 'border-retro-red';
+  // Updated color values
+  const colorMap = {
+    red: '#EA4237',
+    green: '#00FF41',
+    blue: '#186BE0'
+  };
+
+  const currentColor = colorMap[color];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#1a1a1a] to-[#0a0a0a] flex flex-col items-center justify-center p-8 font-retro">
       <div className="max-w-lg w-full text-center space-y-8">
         {/* Title */}
-        <h1 className={`text-4xl md:text-5xl ${colorClass}`}>
+        <h1 
+          className="text-4xl md:text-5xl"
+          style={{ color: currentColor }}
+        >
           {message}
         </h1>
 
         {/* Progress Bar */}
-        <div className={`w-full h-12 border-2 ${borderColorClass} relative`}>
+        <div 
+          className="w-full h-12 border-2 relative"
+          style={{ borderColor: currentColor }}
+        >
           <div 
-            className={`h-full ${bgColorClass} transition-all duration-100 ease-linear`}
-            style={{ width: `${progress}%` }}
+            className="h-full transition-all duration-100 ease-linear"
+            style={{ 
+              width: `${progress}%`,
+              backgroundColor: currentColor 
+            }}
           />
         </div>
 
@@ -63,7 +77,7 @@ export const LoadingScreen = ({
       </div>
 
       {/* Footer */}
-      <div className="absolute bottom-4 right-4 text-retro-muted text-xs">
+      <div className="absolute bottom-4 right-4 text-[#787878] text-xs">
         Made by: Malmö University Students
       </div>
     </div>

@@ -5,6 +5,9 @@ interface YouTubeHeaderProps {
   onMenuClick?: () => void;
 }
 
+// Dimmed color for non-interactive elements
+const dimmedColor = '#787878';
+
 export const YouTubeHeader = ({ onMenuClick }: YouTubeHeaderProps) => {
   return (
     <header className="fixed top-0 left-0 right-0 h-14 bg-yt-bg-primary flex items-center justify-between px-4 z-50">
@@ -14,10 +17,10 @@ export const YouTubeHeader = ({ onMenuClick }: YouTubeHeaderProps) => {
           onClick={onMenuClick}
           className="p-2 hover:bg-yt-hover rounded-full transition-colors"
         >
-          <Menu className="w-6 h-6 text-yt-text-primary" />
+          <Menu className="w-6 h-6" style={{ color: dimmedColor }} />
         </button>
-        <div className="flex items-center gap-1">
-          <img src={youtubeLogo} alt="YouTube" className="h-5 w-auto" />
+        <div className="flex items-center gap-1 opacity-50">
+          <img src={youtubeLogo} alt="YouTube" className="h-5 w-auto grayscale" />
         </div>
       </div>
 
@@ -27,30 +30,32 @@ export const YouTubeHeader = ({ onMenuClick }: YouTubeHeaderProps) => {
           <input
             type="text"
             placeholder="Search"
-            className="flex-1 h-10 px-4 bg-yt-bg-primary border border-yt-border rounded-l-full text-yt-text-primary placeholder:text-yt-text-secondary focus:outline-none focus:border-yt-blue"
+            disabled
+            className="flex-1 h-10 px-4 bg-yt-bg-primary border border-yt-border rounded-l-full placeholder:text-[#787878] focus:outline-none cursor-not-allowed"
+            style={{ color: dimmedColor }}
           />
-          <button className="h-10 px-6 bg-yt-bg-secondary border border-l-0 border-yt-border rounded-r-full hover:bg-yt-hover transition-colors">
-            <Search className="w-5 h-5 text-yt-text-primary" />
+          <button className="h-10 px-6 bg-yt-bg-secondary border border-l-0 border-yt-border rounded-r-full cursor-not-allowed">
+            <Search className="w-5 h-5" style={{ color: dimmedColor }} />
           </button>
         </div>
-        <button className="ml-3 p-2 bg-yt-bg-secondary hover:bg-yt-hover rounded-full transition-colors">
-          <Mic className="w-5 h-5 text-yt-text-primary" />
+        <button className="ml-3 p-2 bg-yt-bg-secondary rounded-full cursor-not-allowed">
+          <Mic className="w-5 h-5" style={{ color: dimmedColor }} />
         </button>
       </div>
 
       {/* Right section */}
       <div className="flex items-center gap-2">
-        <button className="sm:hidden p-2 hover:bg-yt-hover rounded-full transition-colors">
-          <Search className="w-6 h-6 text-yt-text-primary" />
+        <button className="sm:hidden p-2 rounded-full cursor-not-allowed">
+          <Search className="w-6 h-6" style={{ color: dimmedColor }} />
         </button>
-        <button className="hidden sm:flex p-2 hover:bg-yt-hover rounded-full transition-colors">
-          <Video className="w-6 h-6 text-yt-text-primary" />
+        <button className="hidden sm:flex p-2 rounded-full cursor-not-allowed">
+          <Video className="w-6 h-6" style={{ color: dimmedColor }} />
         </button>
-        <button className="p-2 hover:bg-yt-hover rounded-full transition-colors relative">
-          <Bell className="w-6 h-6 text-yt-text-primary" />
-          <span className="absolute top-1 right-1 w-4 h-4 bg-yt-red text-white text-[10px] font-medium rounded-full flex items-center justify-center">3</span>
+        <button className="p-2 rounded-full relative cursor-not-allowed">
+          <Bell className="w-6 h-6" style={{ color: dimmedColor }} />
+          <span className="absolute top-1 right-1 w-4 h-4 bg-[#787878] text-white text-[10px] font-medium rounded-full flex items-center justify-center">3</span>
         </button>
-        <button className="ml-2 w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-white text-sm font-medium">
+        <button className="ml-2 w-8 h-8 rounded-full bg-[#787878] flex items-center justify-center text-white text-sm font-medium cursor-not-allowed">
           A
         </button>
       </div>

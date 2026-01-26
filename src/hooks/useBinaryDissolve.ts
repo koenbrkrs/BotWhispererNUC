@@ -3,9 +3,9 @@ import { useCallback, useRef } from 'react';
 type Platform = 'youtube' | 'twitter' | 'whatsapp';
 
 const PLATFORM_COLORS: Record<Platform, string> = {
-  youtube: '#FF0000',
-  twitter: '#1D9BF0',
-  whatsapp: '#25D366',
+  youtube: '#EA4237',
+  twitter: '#186BE0',
+  whatsapp: '#00FF41',
 };
 
 export const useBinaryDissolve = (platform: Platform) => {

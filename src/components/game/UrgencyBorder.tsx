@@ -17,11 +17,11 @@ export const UrgencyBorder = ({ timeRemaining, currentLevel, isRunning }: Urgenc
 
   if (!isVisible) return null;
 
-  // Platform-specific colors
+  // Platform-specific colors (updated)
   const colors = {
-    1: { border: '#FF1A1A', glow: 'rgba(255, 26, 26, 0.4)' }, // YouTube red
-    2: { border: '#1D9BF0', glow: 'rgba(29, 155, 240, 0.4)' }, // Twitter blue
-    3: { border: '#25D366', glow: 'rgba(37, 211, 102, 0.4)' }, // WhatsApp green
+    1: { border: '#EA4237', glow: 'rgba(234, 66, 55, 0.4)' }, // YouTube red
+    2: { border: '#186BE0', glow: 'rgba(24, 107, 224, 0.4)' }, // Twitter blue
+    3: { border: '#00FF41', glow: 'rgba(0, 255, 65, 0.4)' }, // WhatsApp green
   };
 
   const color = colors[currentLevel];

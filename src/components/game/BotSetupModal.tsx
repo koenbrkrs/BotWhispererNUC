@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { BotConfig } from '@/types/game';
 import { X } from 'lucide-react';
 
+// Updated colors
+const accentColor = '#EA4237';
+
 interface BotSetupModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -63,7 +66,7 @@ const Slider = ({
   <div className="space-y-2">
     <div className="flex justify-between text-sm text-white/70">
       <span>{leftLabel}</span>
-      <span className="text-retro-red">{value}%</span>
+      <span style={{ color: accentColor }}>{value}%</span>
       <span>{rightLabel}</span>
     </div>
     <input
@@ -119,10 +122,16 @@ export const BotSetupModal = ({ isOpen, onClose, onConfirm, initialConfig }: Bot
 
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 font-retro">
-      <div className="bg-gradient-to-b from-[#1a1a1a] to-[#0a0a0a] border-2 border-retro-red rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
+      <div 
+        className="bg-gradient-to-b from-[#1a1a1a] to-[#0a0a0a] border-2 rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto"
+        style={{ borderColor: accentColor }}
+      >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-retro-red/30">
-          <h2 className="text-xl text-retro-red">Bot Configuration</h2>
+        <div 
+          className="flex items-center justify-between p-4 border-b"
+          style={{ borderColor: `${accentColor}50` }}
+        >
+          <h2 style={{ color: accentColor }} className="text-xl">Bot Configuration</h2>
           <button onClick={onClose} className="text-white/50 hover:text-white">
             <X size={24} />
           </button>
@@ -136,7 +145,8 @@ export const BotSetupModal = ({ isOpen, onClose, onConfirm, initialConfig }: Bot
             <select
               value={config.topic}
               onChange={(e) => handleTopicChange(e.target.value)}
-              className="w-full p-3 bg-gray-800 border border-retro-red/30 rounded text-white focus:border-retro-red outline-none"
+              className="w-full p-3 bg-gray-800 border rounded text-white focus:outline-none"
+              style={{ borderColor: `${accentColor}50` }}
             >
               {TOPICS.map(topic => (
                 <option key={topic} value={topic}>{topic}</option>
@@ -150,7 +160,8 @@ export const BotSetupModal = ({ isOpen, onClose, onConfirm, initialConfig }: Bot
             <select
               value={config.stance}
               onChange={(e) => setConfig(prev => ({ ...prev, stance: e.target.value }))}
-              className="w-full p-3 bg-gray-800 border border-retro-red/30 rounded text-white focus:border-retro-red outline-none text-sm"
+              className="w-full p-3 bg-gray-800 border rounded text-white focus:outline-none text-sm"
+              style={{ borderColor: `${accentColor}50` }}
             >
               {currentStanceOptions.map(stance => (
                 <option key={stance} value={stance}>{stance}</option>
@@ -211,7 +222,10 @@ export const BotSetupModal = ({ isOpen, onClose, onConfirm, initialConfig }: Bot
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-retro-red/30">
+        <div 
+          className="p-4 border-t"
+          style={{ borderColor: `${accentColor}50` }}
+        >
           <button
             onClick={handleConfirm}
             className="w-full px-6 py-3 bg-retro-button text-retro-button-text text-lg hover:bg-retro-button-hover transition-colors border-2 border-retro-button-text/20"

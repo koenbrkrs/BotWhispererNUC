@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Comment, PlayerGuess, GameResults } from '@/types/game';
 import { WhatsAppLayout } from '../whatsapp/WhatsAppLayout';
 import { WhatsAppChat } from '../whatsapp/WhatsAppChat';
-import { GameHUD } from './GameHUD';
+import { GameScoreboard } from './GameScoreboard';
 import { UrgencyBorder } from './UrgencyBorder';
 import { formatTopicForWhatsApp } from '@/utils/topicFormatter';
 
@@ -94,10 +94,11 @@ export const WhatsAppGamePhase = ({
         isRunning={isRunning} 
       />
 
-      {/* HUD with Timer and Lives */}
-      <GameHUD
+      {/* Scoreboard with Timer, Lives and Spotted Bots */}
+      <GameScoreboard
         timeRemaining={120}
         lives={lives}
+        spottedBots={correctGuesses}
         currentLevel={3}
         isRunning={isRunning}
         onTimeUp={() => handleGameEnd(true)}

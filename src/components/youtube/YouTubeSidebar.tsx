@@ -1,6 +1,9 @@
 import { Home, Compass, PlaySquare, Clock, ThumbsUp, Flame, Music2, Gamepad2, Newspaper, Trophy, Lightbulb, Shirt, History, Film, Radio, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+// Dimmed color for non-interactive elements
+const dimmedColor = '#787878';
+
 interface YouTubeSidebarProps {
   isOpen: boolean;
 }
@@ -37,13 +40,10 @@ export const YouTubeSidebar = ({ isOpen }: YouTubeSidebarProps) => {
         {mainItems.map((item) => (
           <button
             key={item.label}
-            className={cn(
-              "flex flex-col items-center justify-center py-4 px-1 hover:bg-yt-hover rounded-xl mx-1 transition-colors",
-              item.active && "bg-yt-hover"
-            )}
+            className="flex flex-col items-center justify-center py-4 px-1 rounded-xl mx-1 cursor-not-allowed"
           >
-            <item.icon className="w-6 h-6 text-yt-text-primary" />
-            <span className="text-[10px] text-yt-text-primary mt-1.5">{item.label}</span>
+            <item.icon className="w-6 h-6" style={{ color: dimmedColor }} />
+            <span className="text-[10px] mt-1.5" style={{ color: dimmedColor }}>{item.label}</span>
           </button>
         ))}
       </aside>
@@ -61,50 +61,47 @@ export const YouTubeSidebar = ({ isOpen }: YouTubeSidebarProps) => {
           {mainItems.map((item) => (
             <button
               key={item.label}
-              className={cn(
-                "flex items-center gap-6 w-full px-6 py-2.5 hover:bg-yt-hover transition-colors",
-                item.active && "bg-yt-hover"
-              )}
+              className="flex items-center gap-6 w-full px-6 py-2.5 cursor-not-allowed"
             >
-              <item.icon className={cn("w-6 h-6", item.active ? "text-yt-text-primary" : "text-yt-text-primary")} />
-              <span className={cn("text-sm", item.active ? "font-medium text-yt-text-primary" : "text-yt-text-primary")}>{item.label}</span>
+              <item.icon className="w-6 h-6" style={{ color: dimmedColor }} />
+              <span className="text-sm" style={{ color: dimmedColor }}>{item.label}</span>
             </button>
           ))}
         </div>
 
         {/* Library */}
         <div className="py-3 border-b border-yt-border">
-          <button className="flex items-center gap-6 w-full px-6 py-2.5 hover:bg-yt-hover transition-colors">
-            <span className="text-base font-medium text-yt-text-primary">You</span>
-            <ChevronDown className="w-4 h-4 text-yt-text-primary -rotate-90" />
+          <button className="flex items-center gap-6 w-full px-6 py-2.5 cursor-not-allowed">
+            <span className="text-base font-medium" style={{ color: dimmedColor }}>You</span>
+            <ChevronDown className="w-4 h-4 -rotate-90" style={{ color: dimmedColor }} />
           </button>
           {libraryItems.map((item) => (
             <button
               key={item.label}
-              className="flex items-center gap-6 w-full px-6 py-2.5 hover:bg-yt-hover transition-colors"
+              className="flex items-center gap-6 w-full px-6 py-2.5 cursor-not-allowed"
             >
-              <item.icon className="w-6 h-6 text-yt-text-primary" />
-              <span className="text-sm text-yt-text-primary">{item.label}</span>
+              <item.icon className="w-6 h-6" style={{ color: dimmedColor }} />
+              <span className="text-sm" style={{ color: dimmedColor }}>{item.label}</span>
             </button>
           ))}
         </div>
 
         {/* Explore */}
         <div className="py-3">
-          <h3 className="px-6 py-1 text-base font-medium text-yt-text-primary">Explore</h3>
+          <h3 className="px-6 py-1 text-base font-medium" style={{ color: dimmedColor }}>Explore</h3>
           {exploreItems.map((item) => (
             <button
               key={item.label}
-              className="flex items-center gap-6 w-full px-6 py-2.5 hover:bg-yt-hover transition-colors"
+              className="flex items-center gap-6 w-full px-6 py-2.5 cursor-not-allowed"
             >
-              <item.icon className="w-6 h-6 text-yt-text-primary" />
-              <span className="text-sm text-yt-text-primary">{item.label}</span>
+              <item.icon className="w-6 h-6" style={{ color: dimmedColor }} />
+              <span className="text-sm" style={{ color: dimmedColor }}>{item.label}</span>
             </button>
           ))}
         </div>
 
         {/* Footer */}
-        <div className="mt-auto p-4 text-xs text-yt-text-secondary">
+        <div className="mt-auto p-4 text-xs" style={{ color: dimmedColor }}>
           <p>About Press Copyright</p>
           <p>Contact us Creators</p>
           <p>Advertise Developers</p>
