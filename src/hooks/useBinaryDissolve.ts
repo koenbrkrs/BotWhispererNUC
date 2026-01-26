@@ -21,6 +21,10 @@ export const useBinaryDissolve = (platform: Platform) => {
     container.style.position = 'relative';
     container.style.overflow = 'hidden';
 
+    // Fade content to 50% immediately
+    container.style.transition = 'opacity 0.3s ease-out';
+    container.style.opacity = '0.5';
+
     // Number of rain columns
     const columnWidth = 16;
     const numColumns = Math.ceil(rect.width / columnWidth) + 2;
@@ -33,8 +37,8 @@ export const useBinaryDissolve = (platform: Platform) => {
       const streamLength = Math.floor(Math.random() * 15) + 8; // 8-23 characters
       const stream = document.createElement('div');
       const xPos = col * columnWidth + (Math.random() * 8 - 4);
-      const startDelay = Math.random() * 300;
-      const duration = 1800 + Math.random() * 700; // 1.8-2.5 seconds
+      const startDelay = Math.random() * 400;
+      const duration = 2700 + Math.random() * 1000; // 2.7-3.7 seconds (50% longer)
       
       stream.style.cssText = `
         position: absolute;
@@ -47,22 +51,22 @@ export const useBinaryDissolve = (platform: Platform) => {
         pointer-events: none;
       `;
 
-      // Create characters in the stream with fade trail
+      // Create characters in the stream with fade trail - ALL in platform color
       for (let i = 0; i < streamLength; i++) {
         const char = document.createElement('span');
         char.textContent = Math.random() > 0.5 ? '1' : '0';
         
-        // Head is brightest, fading towards tail
+        // Head is brightest, fading towards tail - ALL same color
         const fadeAmount = i / streamLength;
         const isHead = i === streamLength - 1;
         
         char.style.cssText = `
           font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
           font-size: 14px;
-          font-weight: 500;
+          font-weight: ${isHead ? '700' : '500'};
           line-height: 1.15;
-          color: ${isHead ? '#ffffff' : color};
-          opacity: ${isHead ? 1 : Math.max(0.1, 1 - fadeAmount * 0.9)};
+          color: ${color};
+          opacity: ${isHead ? 1 : Math.max(0.15, 1 - fadeAmount * 0.85)};
         `;
         
         stream.appendChild(char);
@@ -98,9 +102,11 @@ export const useBinaryDissolve = (platform: Platform) => {
       }, duration + startDelay + 100);
     }
 
-    // Fade out the content
-    container.style.transition = 'opacity 1.5s ease-out';
-    container.style.opacity = '0';
+    // Fade out completely AFTER most of the animation plays (delayed)
+    setTimeout(() => {
+      container.style.transition = 'opacity 1s ease-out';
+      container.style.opacity = '0';
+    }, 1800); // Wait 1.8s before fading to 0
 
   }, [platform]);
 

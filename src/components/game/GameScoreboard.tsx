@@ -81,7 +81,7 @@ export const GameScoreboard = ({
         {/* TIME row */}
         <div className="flex justify-between items-center mb-2">
           <span 
-            className={`text-sm tracking-wider ${isUrgent ? 'animate-pulse' : ''}`}
+            className={`text-sm font-bold tracking-wider ${isUrgent ? 'animate-pulse' : ''}`}
             style={{ color: currentColor }}
           >
             TIME
@@ -97,7 +97,7 @@ export const GameScoreboard = ({
         {/* HEALTH row */}
         <div className="flex justify-between items-center mb-2">
           <span 
-            className="text-sm tracking-wider"
+            className="text-sm font-bold tracking-wider"
             style={{ color: currentColor }}
           >
             HEALTH
@@ -120,7 +120,7 @@ export const GameScoreboard = ({
         {/* SPOTTED BOTS row */}
         <div className="flex justify-between items-center">
           <span 
-            className="text-sm tracking-wider"
+            className="text-sm font-bold tracking-wider"
             style={{ color: currentColor }}
           >
             SPOTTED BOTS
