@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Comment, PlayerGuess, GameResults } from '@/types/game';
 import { TwitterLayout } from '../twitter/TwitterLayout';
 import { TwitterFeed } from '../twitter/TwitterFeed';
-import { GameHUD } from './GameHUD';
+import { GameScoreboard } from './GameScoreboard';
 import { UrgencyBorder } from './UrgencyBorder';
 import { formatTopicForTwitter } from '@/utils/topicFormatter';
 
@@ -94,10 +94,11 @@ export const TwitterGamePhase = ({
         isRunning={isRunning} 
       />
 
-      {/* HUD with Timer and Lives */}
-      <GameHUD
+      {/* Scoreboard with Timer, Lives and Spotted Bots */}
+      <GameScoreboard
         timeRemaining={120}
         lives={lives}
+        spottedBots={correctGuesses}
         currentLevel={2}
         isRunning={isRunning}
         onTimeUp={() => handleGameEnd(true)}

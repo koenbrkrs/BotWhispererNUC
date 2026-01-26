@@ -12,7 +12,7 @@
     --yt-bg-tertiary: 48 48 48;
     --yt-text-primary: 241 241 241;
     --yt-text-secondary: 170 170 170;
-    --yt-red: 255 0 0;
+    --yt-red: 234 66 55; /* #EA4237 */
     --yt-blue: 62 166 255;
     --yt-border: 48 48 48;
     --yt-hover: 48 48 48;
@@ -23,8 +23,8 @@
     --tw-bg-hover: 30 32 36;
     --tw-text-primary: 231 233 234;
     --tw-text-secondary: 113 118 123;
-    --tw-blue: 29 155 240;
-    --tw-blue-hover: 26 140 216;
+    --tw-blue: 24 107 224; /* #186BE0 */
+    --tw-blue-hover: 20 90 190;
     --tw-border: 47 51 54;
 
     /* WhatsApp Dark Theme Colors */
@@ -39,18 +39,21 @@
     --wa-bubble-outgoing: 0 92 75;
     --wa-text-primary: 233 237 239;
     --wa-text-secondary: 134 150 160;
-    --wa-green: 37 211 102;
+    --wa-green: 0 255 65; /* #00FF41 */
     --wa-green-dark: 0 168 132;
     --wa-border: 38 50 56;
 
-    /* Retro Theme Colors */
-    --retro-red: 227 76 92;
-    --retro-green: 102 255 102;
-    --retro-blue: 100 149 237;
-    --retro-muted: 128 128 128;
+    /* Retro Theme Colors - Updated */
+    --retro-red: 234 66 55; /* #EA4237 */
+    --retro-green: 0 255 65; /* #00FF41 */
+    --retro-blue: 24 107 224; /* #186BE0 */
+    --retro-muted: 120 120 120; /* #787878 */
     --retro-button: 245 240 230;
     --retro-button-text: 30 30 30;
     --retro-button-hover: 220 215 205;
+
+    /* Dimmed colors for non-interactive elements */
+    --game-dimmed: 120 120 120; /* #787878 */
 
     --background: 0 0% 6%;
     --foreground: 0 0% 95%;
@@ -159,13 +162,13 @@
     scrollbar-width: thin;
   }
 
-  /* Retro slider styling */
+  /* Retro slider styling - using updated red color */
   .slider-retro::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 16px;
     height: 16px;
-    background: rgb(var(--retro-red));
+    background: #EA4237;
     border-radius: 2px;
     cursor: pointer;
   }
@@ -173,7 +176,7 @@
   .slider-retro::-moz-range-thumb {
     width: 16px;
     height: 16px;
-    background: rgb(var(--retro-red));
+    background: #EA4237;
     border-radius: 2px;
     cursor: pointer;
     border: none;

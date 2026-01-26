@@ -25,12 +25,12 @@ export const IntroScreen = ({ onStart, onSetupBots, hasSetupBots }: IntroScreenP
       <div className="max-w-4xl w-full text-center space-y-12">
         {/* Main Title */}
         <div className="space-y-2">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl text-retro-red leading-tight">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl text-[#EA4237] leading-tight">
             Your mission.
           </h1>
-          <h2 className="text-4xl md:text-6xl lg:text-7xl text-retro-red leading-tight pl-8 md:pl-16">
+          <h2 className="text-4xl md:text-6xl lg:text-7xl text-[#EA4237] leading-tight pl-8 md:pl-16">
             Spot the bots<span className="inline-block w-[1.5ch]">{dots}</span>
-            <span className="block text-right text-retro-red text-2xl md:text-3xl mt-2">
+            <span className="block text-right text-[#EA4237] text-2xl md:text-3xl mt-2">
               ////////////////////////
             </span>
           </h2>
@@ -38,7 +38,7 @@ export const IntroScreen = ({ onStart, onSetupBots, hasSetupBots }: IntroScreenP
 
         {/* Instructions */}
         <div className="text-left text-white/90 space-y-2 text-sm md:text-base max-w-xl mx-auto">
-          <p className="text-retro-muted">&gt; Actions</p>
+          <p className="text-[#787878]">&gt; Actions</p>
           <p className="pl-4">[1] You get two minutes to find all the botted comments</p>
           <p className="pl-4">[2] Suspect that a comment is a bot? Press it.</p>
           <p className="pl-4">[3] Correct = Disappears, Wrong = Turns red.</p>
@@ -65,7 +65,7 @@ export const IntroScreen = ({ onStart, onSetupBots, hasSetupBots }: IntroScreenP
       </div>
 
       {/* Footer */}
-      <div className="absolute bottom-4 right-4 text-retro-muted text-xs">
+      <div className="absolute bottom-4 right-4 text-[#787878] text-xs">
         Made by: Malmö University Students
       </div>
     </div>

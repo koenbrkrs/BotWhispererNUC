@@ -13,6 +13,10 @@ interface EndScreenProps {
   onRestart: () => void;
 }
 
+// Updated colors
+const winColor = '#00FF41';
+const loseColor = '#EA4237';
+
 export const EndScreen = ({ 
   won, 
   youtubeResults, 
@@ -51,8 +55,7 @@ export const EndScreen = ({
     setPlayerRank(rank);
   }, [totalDetected, totalWrong, totalTimeUsed]);
 
-  const colorClass = won ? 'text-retro-green' : 'text-retro-red';
-  const buttonBgClass = won ? 'bg-retro-green hover:bg-retro-green/80' : 'bg-retro-red hover:bg-retro-red/80';
+  const currentColor = won ? winColor : loseColor;
 
   const handlePrintBotsDetected = () => {
     printBotsDetected(playerCode, totalDetected, totalBots, totalWrong, totalHumans, highscore);
@@ -82,7 +85,8 @@ export const EndScreen = ({
               return (
                 <div 
                   key={entry.code + i} 
-                  className={`grid grid-cols-3 gap-4 text-lg ${isPlayer ? colorClass : 'text-white/90'}`}
+                  className="grid grid-cols-3 gap-4 text-lg"
+                  style={{ color: isPlayer ? currentColor : 'rgba(255,255,255,0.9)' }}
                 >
                   <span>{isPlayer ? `>> ${rankLabels[i]}` : `   ${rankLabels[i]}`}</span>
                   <span>{isPlayer ? 'YOU' : entry.code}</span>
@@ -91,14 +95,20 @@ export const EndScreen = ({
               );
             })
           ) : (
-            <div className={`grid grid-cols-3 gap-4 text-lg ${colorClass}`}>
+            <div 
+              className="grid grid-cols-3 gap-4 text-lg"
+              style={{ color: currentColor }}
+            >
               <span>{`>> 1st`}</span>
               <span>YOU</span>
               <span>{highscore.toLocaleString()}</span>
             </div>
           )}
           {playerRank > 10 && (
-            <div className={`grid grid-cols-3 gap-4 text-lg ${colorClass} mt-4 pt-4 border-t border-white/20`}>
+            <div 
+              className="grid grid-cols-3 gap-4 text-lg mt-4 pt-4 border-t border-white/20"
+              style={{ color: currentColor }}
+            >
               <span>{`>> ${playerRank}th`}</span>
               <span>YOU</span>
               <span>{highscore.toLocaleString()}</span>
@@ -108,19 +118,23 @@ export const EndScreen = ({
 
         {/* Results */}
         <div className="flex-1 space-y-6">
-          <h1 className={`text-4xl md:text-5xl ${colorClass}`}>
+          <h1 
+            className="text-4xl md:text-5xl"
+            style={{ color: currentColor }}
+          >
             {won ? 'HUMANITY WON..' : 'HUMANITY LOST..'}
           </h1>
 
           <div className="space-y-2 text-white/80 text-lg">
             <p>You detected [{totalDetected}] out of [{totalBots}] bots</p>
             <p>You thought [{totalWrong}] of [{totalHumans}] humans were bots.</p>
-            <p className="mt-4">Your ID: <span className={colorClass}>{playerCode}</span></p>
+            <p className="mt-4">Your ID: <span style={{ color: currentColor }}>{playerCode}</span></p>
           </div>
 
           <button
             onClick={onRestart}
-            className={`px-8 py-3 ${buttonBgClass} text-black text-lg transition-colors border-2 border-black/20`}
+            className="px-8 py-3 text-black text-lg transition-colors border-2 border-black/20"
+            style={{ backgroundColor: currentColor }}
           >
             RESTART
           </button>

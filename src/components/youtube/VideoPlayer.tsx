@@ -1,6 +1,9 @@
 import { Play, Settings, Maximize, Volume2, SkipBack, SkipForward } from 'lucide-react';
 import { useState } from 'react';
 
+// Dimmed color for non-interactive elements
+const dimmedColor = '#787878';
+
 interface VideoPlayerProps {
   title?: string;
 }
@@ -13,64 +16,67 @@ export const VideoPlayer = ({ title = "Video" }: VideoPlayerProps) => {
       {/* Video thumbnail / black screen */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60" />
       
-      {/* Center play button */}
+      {/* Center play button - dimmed */}
       {!isPlaying && (
         <button 
           onClick={() => setIsPlaying(true)}
-          className="absolute inset-0 flex items-center justify-center z-10"
+          className="absolute inset-0 flex items-center justify-center z-10 cursor-not-allowed"
         >
-          <div className="w-16 h-16 md:w-20 md:h-20 bg-black/80 hover:bg-yt-red rounded-full flex items-center justify-center transition-all duration-200 transform hover:scale-105">
+          <div 
+            className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center"
+            style={{ backgroundColor: 'rgba(120, 120, 120, 0.8)' }}
+          >
             <Play className="w-8 h-8 md:w-10 md:h-10 text-white ml-1" fill="white" />
           </div>
         </button>
       )}
 
-      {/* Video controls bar */}
+      {/* Video controls bar - dimmed */}
       <div className="absolute bottom-0 left-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
         {/* Progress bar */}
-        <div className="relative h-1 bg-white/30 mx-0 cursor-pointer group/progress">
-          <div className="absolute left-0 top-0 h-full w-[35%] bg-yt-red">
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-yt-red rounded-full opacity-0 group-hover/progress:opacity-100 transition-opacity" />
+        <div className="relative h-1 bg-white/30 mx-0 cursor-not-allowed">
+          <div className="absolute left-0 top-0 h-full w-[35%]" style={{ backgroundColor: dimmedColor }}>
+            <div 
+              className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full opacity-0"
+              style={{ backgroundColor: dimmedColor }}
+            />
           </div>
-          <div className="absolute left-[35%] top-0 h-full w-[15%] bg-white/50" />
+          <div className="absolute left-[35%] top-0 h-full w-[15%] bg-white/30" />
         </div>
         
         {/* Controls */}
         <div className="flex items-center justify-between px-3 py-2 bg-gradient-to-t from-black/90 to-transparent">
           <div className="flex items-center gap-2">
-            <button className="p-1.5 hover:bg-white/10 rounded transition-colors">
-              <SkipBack className="w-5 h-5 text-white" />
+            <button className="p-1.5 rounded cursor-not-allowed">
+              <SkipBack className="w-5 h-5" style={{ color: dimmedColor }} />
             </button>
-            <button 
-              onClick={() => setIsPlaying(!isPlaying)}
-              className="p-1.5 hover:bg-white/10 rounded transition-colors"
-            >
+            <button className="p-1.5 rounded cursor-not-allowed">
               {isPlaying ? (
                 <div className="flex gap-0.5">
-                  <div className="w-1.5 h-5 bg-white rounded-sm" />
-                  <div className="w-1.5 h-5 bg-white rounded-sm" />
+                  <div className="w-1.5 h-5 rounded-sm" style={{ backgroundColor: dimmedColor }} />
+                  <div className="w-1.5 h-5 rounded-sm" style={{ backgroundColor: dimmedColor }} />
                 </div>
               ) : (
-                <Play className="w-5 h-5 text-white" fill="white" />
+                <Play className="w-5 h-5" style={{ color: dimmedColor }} fill={dimmedColor} />
               )}
             </button>
-            <button className="p-1.5 hover:bg-white/10 rounded transition-colors">
-              <SkipForward className="w-5 h-5 text-white" />
+            <button className="p-1.5 rounded cursor-not-allowed">
+              <SkipForward className="w-5 h-5" style={{ color: dimmedColor }} />
             </button>
-            <button className="p-1.5 hover:bg-white/10 rounded transition-colors">
-              <Volume2 className="w-5 h-5 text-white" />
+            <button className="p-1.5 rounded cursor-not-allowed">
+              <Volume2 className="w-5 h-5" style={{ color: dimmedColor }} />
             </button>
-            <span className="text-white text-xs ml-2">
+            <span className="text-xs ml-2" style={{ color: dimmedColor }}>
               4:23 / 12:45
             </span>
           </div>
           
           <div className="flex items-center gap-2">
-            <button className="p-1.5 hover:bg-white/10 rounded transition-colors">
-              <Settings className="w-5 h-5 text-white" />
+            <button className="p-1.5 rounded cursor-not-allowed">
+              <Settings className="w-5 h-5" style={{ color: dimmedColor }} />
             </button>
-            <button className="p-1.5 hover:bg-white/10 rounded transition-colors">
-              <Maximize className="w-5 h-5 text-white" />
+            <button className="p-1.5 rounded cursor-not-allowed">
+              <Maximize className="w-5 h-5" style={{ color: dimmedColor }} />
             </button>
           </div>
         </div>

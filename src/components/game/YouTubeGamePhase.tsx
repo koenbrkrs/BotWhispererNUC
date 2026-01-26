@@ -5,7 +5,7 @@ import { VideoPlayer } from '../youtube/VideoPlayer';
 import { VideoInfo } from '../youtube/VideoInfo';
 import { RecommendedVideos } from '../youtube/RecommendedVideos';
 import { CommentsSection } from '../youtube/CommentsSection';
-import { GameHUD } from './GameHUD';
+import { GameScoreboard } from './GameScoreboard';
 import { GameProgressBar } from './GameProgressBar';
 import { UrgencyBorder } from './UrgencyBorder';
 import { formatTopicForYouTube } from '@/utils/topicFormatter';
@@ -107,10 +107,11 @@ export const YouTubeGamePhase = ({
         onLevelSelect={onLevelSelect}
       />
 
-      {/* HUD with Timer and Lives */}
-      <GameHUD
+      {/* Scoreboard with Timer, Lives and Spotted Bots */}
+      <GameScoreboard
         timeRemaining={120}
         lives={lives}
+        spottedBots={correctGuesses}
         currentLevel={1}
         isRunning={isRunning}
         onTimeUp={() => handleGameEnd(true)}
