@@ -80,7 +80,7 @@ export const YouTubeGamePhase = ({
     if (isCorrect) {
       setTimeout(() => {
         setRemovedIds(prev => new Set([...prev, comment.id]));
-      }, 1200);
+      }, 3000); // Wait for full animation (fade + rain effect)
     } else {
       setLivesLost(prev => prev + 1);
       onLiveLost();
