@@ -76,7 +76,7 @@ export const TwitterGamePhase = ({
     if (isCorrect) {
       setTimeout(() => {
         setRemovedIds(prev => new Set([...prev, comment.id]));
-      }, 3000); // Wait for full animation (fade + rain effect)
+      }, 2000); // Wait for full animation (2 seconds)
     } else {
       setLivesLost(prev => prev + 1);
       onLiveLost();
