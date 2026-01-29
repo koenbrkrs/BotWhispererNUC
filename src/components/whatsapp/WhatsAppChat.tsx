@@ -1,7 +1,8 @@
 import { useRef, useEffect, useMemo } from 'react';
 import { Comment, PlayerGuess } from '@/types/game';
 import { WhatsAppMessage } from './WhatsAppMessage';
-import { Search, MoreVertical, Phone, Video, Smile, Paperclip, Mic, Send } from 'lucide-react';
+import { Search, MoreVertical, Phone, Video, Smile, Paperclip, Mic } from 'lucide-react';
+import { HeaderScoreboard } from '../game/HeaderScoreboard';
 
 interface WhatsAppChatProps {
   groupName: string;
@@ -13,6 +14,15 @@ interface WhatsAppChatProps {
   bottedCount?: number;
   correctGuesses?: number;
   incorrectGuesses?: number;
+  scoreboardProps?: {
+    timeRemaining: number;
+    lives: number;
+    spottedBots: number;
+    totalBots: number;
+    isRunning: boolean;
+    onTimeUp: () => void;
+    onTick?: (time: number) => void;
+  };
 }
 
 export const WhatsAppChat = ({
@@ -25,6 +35,7 @@ export const WhatsAppChat = ({
   bottedCount = 0,
   correctGuesses = 0,
   incorrectGuesses = 0,
+  scoreboardProps,
 }: WhatsAppChatProps) => {
   const chatRef = useRef<HTMLDivElement>(null);
 
@@ -68,7 +79,7 @@ export const WhatsAppChat = ({
   return (
     <div className="flex-1 flex flex-col bg-wa-chat-bg min-h-screen">
       {/* Chat Header */}
-      <div className="h-[60px] bg-wa-bg-header px-4 flex items-center justify-between border-l border-wa-border">
+      <div className="sticky top-0 z-40 h-[60px] bg-wa-bg-header px-4 flex items-center justify-between border-l border-wa-border">
         <div className="flex items-center gap-3">
           <img
             src={`https://picsum.photos/seed/${groupName}/40/40`}
@@ -82,28 +93,28 @@ export const WhatsAppChat = ({
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-6 text-wa-text-secondary">
-          <Video className="w-5 h-5 cursor-pointer hover:text-wa-text-primary transition-colors" />
-          <Phone className="w-5 h-5 cursor-pointer hover:text-wa-text-primary transition-colors" />
-          <Search className="w-5 h-5 cursor-pointer hover:text-wa-text-primary transition-colors" />
-          <MoreVertical className="w-5 h-5 cursor-pointer hover:text-wa-text-primary transition-colors" />
-        </div>
+        
+        {/* Scoreboard in header */}
+        {scoreboardProps ? (
+          <HeaderScoreboard
+            timeRemaining={scoreboardProps.timeRemaining}
+            lives={scoreboardProps.lives}
+            spottedBots={scoreboardProps.spottedBots}
+            totalBots={scoreboardProps.totalBots}
+            currentLevel={3}
+            isRunning={scoreboardProps.isRunning}
+            onTimeUp={scoreboardProps.onTimeUp}
+            onTick={scoreboardProps.onTick}
+          />
+        ) : (
+          <div className="flex items-center gap-6 text-wa-text-secondary">
+            <Video className="w-5 h-5 cursor-pointer hover:text-wa-text-primary transition-colors" />
+            <Phone className="w-5 h-5 cursor-pointer hover:text-wa-text-primary transition-colors" />
+            <Search className="w-5 h-5 cursor-pointer hover:text-wa-text-primary transition-colors" />
+            <MoreVertical className="w-5 h-5 cursor-pointer hover:text-wa-text-primary transition-colors" />
+          </div>
+        )}
       </div>
-
-      {/* Game Stats Bar */}
-      {mode === 'playing' && (
-        <div className="bg-wa-bg-secondary px-4 py-2 flex items-center justify-center gap-6 text-sm border-b border-wa-border">
-          <span className="text-wa-text-secondary">
-            Bots to find: <span className="text-wa-green font-bold">{bottedCount}</span>
-          </span>
-          <span className="text-wa-text-secondary">
-            Found: <span className="text-green-400 font-bold">{correctGuesses}</span>
-          </span>
-          <span className="text-wa-text-secondary">
-            Wrong: <span className="text-red-400 font-bold">{incorrectGuesses}</span>
-          </span>
-        </div>
-      )}
 
       {/* Chat Messages */}
       <div

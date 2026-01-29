@@ -5,7 +5,6 @@ import { VideoPlayer } from '../youtube/VideoPlayer';
 import { VideoInfo } from '../youtube/VideoInfo';
 import { RecommendedVideos } from '../youtube/RecommendedVideos';
 import { CommentsSection } from '../youtube/CommentsSection';
-import { GameScoreboard } from './GameScoreboard';
 import { GameProgressBar } from './GameProgressBar';
 import { UrgencyBorder } from './UrgencyBorder';
 import { formatTopicForYouTube } from '@/utils/topicFormatter';
@@ -80,7 +79,7 @@ export const YouTubeGamePhase = ({
     if (isCorrect) {
       setTimeout(() => {
         setRemovedIds(prev => new Set([...prev, comment.id]));
-      }, 2000); // Wait for full animation (2 seconds)
+      }, 2000);
     } else {
       setLivesLost(prev => prev + 1);
       onLiveLost();
@@ -89,8 +88,19 @@ export const YouTubeGamePhase = ({
 
   const videoTitle = formatTopicForYouTube(topic);
 
+  // Scoreboard props for the header
+  const scoreboardProps = {
+    timeRemaining: 120,
+    lives,
+    spottedBots: correctGuesses,
+    totalBots: totalBotted,
+    isRunning,
+    onTimeUp: () => handleGameEnd(true),
+    onTick: setTimeRemaining,
+  };
+
   return (
-    <YouTubeLayout>
+    <YouTubeLayout scoreboardProps={scoreboardProps}>
       {/* Urgency Border */}
       <UrgencyBorder 
         timeRemaining={timeRemaining} 
@@ -105,17 +115,6 @@ export const YouTubeGamePhase = ({
         level2Complete={false}
         level3Complete={false}
         onLevelSelect={onLevelSelect}
-      />
-
-      {/* Scoreboard with Timer, Lives and Spotted Bots */}
-      <GameScoreboard
-        timeRemaining={120}
-        lives={lives}
-        spottedBots={correctGuesses}
-        currentLevel={1}
-        isRunning={isRunning}
-        onTimeUp={() => handleGameEnd(true)}
-        onTick={setTimeRemaining}
       />
 
       <div className="max-w-[1800px] mx-auto px-4 lg:px-6 py-6 pt-20">

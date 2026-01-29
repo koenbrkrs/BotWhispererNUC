@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Comment, PlayerGuess, GameResults } from '@/types/game';
 import { TwitterLayout } from '../twitter/TwitterLayout';
 import { TwitterFeed } from '../twitter/TwitterFeed';
-import { GameScoreboard } from './GameScoreboard';
 import { UrgencyBorder } from './UrgencyBorder';
 import { formatTopicForTwitter } from '@/utils/topicFormatter';
 
@@ -76,7 +75,7 @@ export const TwitterGamePhase = ({
     if (isCorrect) {
       setTimeout(() => {
         setRemovedIds(prev => new Set([...prev, comment.id]));
-      }, 2000); // Wait for full animation (2 seconds)
+      }, 2000);
     } else {
       setLivesLost(prev => prev + 1);
       onLiveLost();
@@ -85,24 +84,24 @@ export const TwitterGamePhase = ({
 
   const twitterTopic = formatTopicForTwitter(topic);
 
+  // Scoreboard props for the header
+  const scoreboardProps = {
+    timeRemaining: 120,
+    lives,
+    spottedBots: correctGuesses,
+    totalBots: totalBotted,
+    isRunning,
+    onTimeUp: () => handleGameEnd(true),
+    onTick: setTimeRemaining,
+  };
+
   return (
-    <TwitterLayout>
+    <TwitterLayout scoreboardProps={scoreboardProps}>
       {/* Urgency Border */}
       <UrgencyBorder 
         timeRemaining={timeRemaining} 
         currentLevel={2} 
         isRunning={isRunning} 
-      />
-
-      {/* Scoreboard with Timer, Lives and Spotted Bots */}
-      <GameScoreboard
-        timeRemaining={120}
-        lives={lives}
-        spottedBots={correctGuesses}
-        currentLevel={2}
-        isRunning={isRunning}
-        onTimeUp={() => handleGameEnd(true)}
-        onTick={setTimeRemaining}
       />
 
       <TwitterFeed
