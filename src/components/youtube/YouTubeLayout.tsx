@@ -5,14 +5,23 @@ import { YouTubeSidebar } from './YouTubeSidebar';
 interface YouTubeLayoutProps {
   children: ReactNode;
   showSidebar?: boolean;
+  scoreboardProps?: {
+    timeRemaining: number;
+    lives: number;
+    spottedBots: number;
+    totalBots: number;
+    isRunning: boolean;
+    onTimeUp: () => void;
+    onTick?: (time: number) => void;
+  };
 }
 
-export const YouTubeLayout = ({ children, showSidebar = true }: YouTubeLayoutProps) => {
+export const YouTubeLayout = ({ children, showSidebar = true, scoreboardProps }: YouTubeLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-yt-bg-primary font-roboto">
-      <YouTubeHeader onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
+      <YouTubeHeader onMenuClick={() => setSidebarOpen(!sidebarOpen)} scoreboardProps={scoreboardProps} />
       
       {showSidebar && <YouTubeSidebar isOpen={sidebarOpen} />}
       

@@ -1,14 +1,25 @@
-import { Menu, Search, Mic, Video, Bell, User } from 'lucide-react';
+import { Menu, Search, Mic, Video, Bell } from 'lucide-react';
 import youtubeLogo from '@/assets/youtube-logo.png';
+import { HeaderScoreboard } from '../game/HeaderScoreboard';
+import { ReactNode } from 'react';
 
 interface YouTubeHeaderProps {
   onMenuClick?: () => void;
+  scoreboardProps?: {
+    timeRemaining: number;
+    lives: number;
+    spottedBots: number;
+    totalBots: number;
+    isRunning: boolean;
+    onTimeUp: () => void;
+    onTick?: (time: number) => void;
+  };
 }
 
 // Dimmed color for non-interactive elements
 const dimmedColor = '#787878';
 
-export const YouTubeHeader = ({ onMenuClick }: YouTubeHeaderProps) => {
+export const YouTubeHeader = ({ onMenuClick, scoreboardProps }: YouTubeHeaderProps) => {
   return (
     <header className="fixed top-0 left-0 right-0 h-14 bg-yt-bg-primary flex items-center justify-between px-4 z-50">
       {/* Left section */}
@@ -43,21 +54,36 @@ export const YouTubeHeader = ({ onMenuClick }: YouTubeHeaderProps) => {
         </button>
       </div>
 
-      {/* Right section */}
+      {/* Right section - Scoreboard or default icons */}
       <div className="flex items-center gap-2">
-        <button className="sm:hidden p-2 rounded-full cursor-not-allowed">
-          <Search className="w-6 h-6" style={{ color: dimmedColor }} />
-        </button>
-        <button className="hidden sm:flex p-2 rounded-full cursor-not-allowed">
-          <Video className="w-6 h-6" style={{ color: dimmedColor }} />
-        </button>
-        <button className="p-2 rounded-full relative cursor-not-allowed">
-          <Bell className="w-6 h-6" style={{ color: dimmedColor }} />
-          <span className="absolute top-1 right-1 w-4 h-4 bg-[#787878] text-white text-[10px] font-medium rounded-full flex items-center justify-center">3</span>
-        </button>
-        <button className="ml-2 w-8 h-8 rounded-full bg-[#787878] flex items-center justify-center text-white text-sm font-medium cursor-not-allowed">
-          A
-        </button>
+        {scoreboardProps ? (
+          <HeaderScoreboard
+            timeRemaining={scoreboardProps.timeRemaining}
+            lives={scoreboardProps.lives}
+            spottedBots={scoreboardProps.spottedBots}
+            totalBots={scoreboardProps.totalBots}
+            currentLevel={1}
+            isRunning={scoreboardProps.isRunning}
+            onTimeUp={scoreboardProps.onTimeUp}
+            onTick={scoreboardProps.onTick}
+          />
+        ) : (
+          <>
+            <button className="sm:hidden p-2 rounded-full cursor-not-allowed">
+              <Search className="w-6 h-6" style={{ color: dimmedColor }} />
+            </button>
+            <button className="hidden sm:flex p-2 rounded-full cursor-not-allowed">
+              <Video className="w-6 h-6" style={{ color: dimmedColor }} />
+            </button>
+            <button className="p-2 rounded-full relative cursor-not-allowed">
+              <Bell className="w-6 h-6" style={{ color: dimmedColor }} />
+              <span className="absolute top-1 right-1 w-4 h-4 bg-[#787878] text-white text-[10px] font-medium rounded-full flex items-center justify-center">3</span>
+            </button>
+            <button className="ml-2 w-8 h-8 rounded-full bg-[#787878] flex items-center justify-center text-white text-sm font-medium cursor-not-allowed">
+              A
+            </button>
+          </>
+        )}
       </div>
     </header>
   );

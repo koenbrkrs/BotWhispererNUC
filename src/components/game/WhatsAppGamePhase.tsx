@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Comment, PlayerGuess, GameResults } from '@/types/game';
 import { WhatsAppLayout } from '../whatsapp/WhatsAppLayout';
 import { WhatsAppChat } from '../whatsapp/WhatsAppChat';
-import { GameScoreboard } from './GameScoreboard';
 import { UrgencyBorder } from './UrgencyBorder';
 import { formatTopicForWhatsApp } from '@/utils/topicFormatter';
 
@@ -76,7 +75,7 @@ export const WhatsAppGamePhase = ({
     if (isCorrect) {
       setTimeout(() => {
         setRemovedIds(prev => new Set([...prev, comment.id]));
-      }, 2000); // Wait for full animation (2 seconds)
+      }, 2000);
     } else {
       setLivesLost(prev => prev + 1);
       onLiveLost();
@@ -85,6 +84,17 @@ export const WhatsAppGamePhase = ({
 
   const groupName = formatTopicForWhatsApp(topic);
 
+  // Scoreboard props for the header
+  const scoreboardProps = {
+    timeRemaining: 120,
+    lives,
+    spottedBots: correctGuesses,
+    totalBots: totalBotted,
+    isRunning,
+    onTimeUp: () => handleGameEnd(true),
+    onTick: setTimeRemaining,
+  };
+
   return (
     <WhatsAppLayout groupName={groupName}>
       {/* Urgency Border */}
@@ -92,17 +102,6 @@ export const WhatsAppGamePhase = ({
         timeRemaining={timeRemaining} 
         currentLevel={3} 
         isRunning={isRunning} 
-      />
-
-      {/* Scoreboard with Timer, Lives and Spotted Bots */}
-      <GameScoreboard
-        timeRemaining={120}
-        lives={lives}
-        spottedBots={correctGuesses}
-        currentLevel={3}
-        isRunning={isRunning}
-        onTimeUp={() => handleGameEnd(true)}
-        onTick={setTimeRemaining}
       />
 
       {/* Load ALL comments statically - no dynamic pop-ups */}
@@ -116,6 +115,7 @@ export const WhatsAppGamePhase = ({
         bottedCount={totalBotted}
         correctGuesses={correctGuesses}
         incorrectGuesses={incorrectGuesses}
+        scoreboardProps={scoreboardProps}
       />
     </WhatsAppLayout>
   );

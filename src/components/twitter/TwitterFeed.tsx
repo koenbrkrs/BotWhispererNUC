@@ -32,7 +32,7 @@ export const TwitterFeed = ({
   return (
     <main className="flex-1 border-x border-tw-border min-h-screen max-w-[600px]">
       {/* Header */}
-      <div className="sticky top-0 z-30 bg-tw-bg-primary/80 backdrop-blur-md border-b border-tw-border">
+      <div className="sticky top-14 z-30 bg-tw-bg-primary/80 backdrop-blur-md border-b border-tw-border">
         <div className="flex items-center justify-between px-4 h-14">
           <h1 className="text-xl font-bold text-tw-text-primary">Home</h1>
           <button className="p-2 hover:bg-tw-bg-hover rounded-full transition-colors">

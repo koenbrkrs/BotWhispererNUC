@@ -1,11 +1,24 @@
-import { Search, Sparkles, Settings } from 'lucide-react';
+import { Search, Settings } from 'lucide-react';
+import { HeaderScoreboard } from '../game/HeaderScoreboard';
+
+interface TwitterHeaderProps {
+  scoreboardProps?: {
+    timeRemaining: number;
+    lives: number;
+    spottedBots: number;
+    totalBots: number;
+    isRunning: boolean;
+    onTimeUp: () => void;
+    onTick?: (time: number) => void;
+  };
+}
 
 // Dimmed color for non-interactive elements
 const dimmedColor = '#787878';
 
-export const TwitterHeader = () => {
+export const TwitterHeader = ({ scoreboardProps }: TwitterHeaderProps) => {
   return (
-    <header className="sticky top-0 z-40 bg-tw-bg-primary/80 backdrop-blur-md border-b border-tw-border">
+    <header className="fixed top-0 left-0 right-0 z-40 bg-tw-bg-primary/80 backdrop-blur-md border-b border-tw-border">
       <div className="flex items-center justify-between px-4 h-14">
         {/* Logo - dimmed */}
         <div className="flex items-center">
@@ -28,10 +41,23 @@ export const TwitterHeader = () => {
           </div>
         </div>
 
-        {/* Settings - dimmed */}
-        <button className="p-2 rounded-full cursor-not-allowed">
-          <Settings className="w-5 h-5" style={{ color: dimmedColor }} />
-        </button>
+        {/* Right section - Scoreboard or settings */}
+        {scoreboardProps ? (
+          <HeaderScoreboard
+            timeRemaining={scoreboardProps.timeRemaining}
+            lives={scoreboardProps.lives}
+            spottedBots={scoreboardProps.spottedBots}
+            totalBots={scoreboardProps.totalBots}
+            currentLevel={2}
+            isRunning={scoreboardProps.isRunning}
+            onTimeUp={scoreboardProps.onTimeUp}
+            onTick={scoreboardProps.onTick}
+          />
+        ) : (
+          <button className="p-2 rounded-full cursor-not-allowed">
+            <Settings className="w-5 h-5" style={{ color: dimmedColor }} />
+          </button>
+        )}
       </div>
     </header>
   );
