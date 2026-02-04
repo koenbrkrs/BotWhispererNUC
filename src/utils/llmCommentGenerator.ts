@@ -1,4 +1,5 @@
 import { Comment, BotConfig } from '@/types/game';
+import { getHumanCommentsForLevel, clearHumanCommentsCache } from './humanCommentsLoader';
 
 const usernames = [
   'TechWatcher42', 'DigitalNomad_X', 'CodeMaster99', 'ByteRunner', 'NetSurfer2024',
@@ -32,10 +33,9 @@ const createCacheKey = (config: BotConfig, platform: string): string => {
   return `${platform}-${config.topic}-${config.stance}-${config.friendlyAggressive}-${config.logicalIllogical}-${config.humorSerious}-${config.sarcasmDirect}-${config.openClosed}-${config.minimalVerbose}-${config.emojiAmount}`;
 };
 
-const callLLM = async (
+const callLLMForBots = async (
   config: BotConfig, 
-  platform: 'youtube' | 'twitter' | 'whatsapp',
-  type: 'bot' | 'human'
+  platform: 'youtube' | 'twitter' | 'whatsapp'
 ): Promise<string[]> => {
   const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-comments`, {
     method: 'POST',
@@ -43,12 +43,12 @@ const callLLM = async (
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
     },
-    body: JSON.stringify({ config, platform, type }),
+    body: JSON.stringify({ config, platform, type: 'bot' }),
   });
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(error.error || `Failed to generate ${type} comments`);
+    throw new Error(error.error || 'Failed to generate bot comments');
   }
 
   const data = await response.json();
@@ -67,20 +67,22 @@ export const generateLLMComments = async (
     return commentCache.get(cacheKey)!;
   }
 
-  console.log(`Generating new LLM comments for ${platform}...`);
+  console.log(`Generating comments for ${platform}...`);
 
-  // Generate both bot and human comments in parallel
+  // Generate bot comments via LLM and load human comments from spreadsheet in parallel
   const [botComments, humanComments] = await Promise.all([
-    callLLM(config, platform, 'bot'),
-    callLLM(config, platform, 'human'),
+    callLLMForBots(config, platform),
+    getHumanCommentsForLevel(config.topic, platform, 10),
   ]);
+
+  console.log(`Got ${botComments.length} bot comments and ${humanComments.length} human comments`);
 
   const shuffledUsernames = shuffleArray([...usernames]);
   const shuffledTimestamps = shuffleArray([...timestamps]);
 
   const comments: Comment[] = [];
 
-  // Add human comments (not bots)
+  // Add human comments from spreadsheet (not bots)
   humanComments.forEach((text, i) => {
     comments.push({
       id: `human-${platform}-${i}`,
@@ -92,7 +94,7 @@ export const generateLLMComments = async (
     });
   });
 
-  // Add bot comments
+  // Add bot comments from LLM
   botComments.forEach((text, i) => {
     comments.push({
       id: `bot-${platform}-${i}`,
@@ -115,4 +117,5 @@ export const generateLLMComments = async (
 
 export const clearCommentCache = () => {
   commentCache.clear();
+  clearHumanCommentsCache();
 };
