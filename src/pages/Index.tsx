@@ -8,14 +8,19 @@ import { YouTubeGamePhase } from '@/components/game/YouTubeGamePhase';
 import { TwitterGamePhase } from '@/components/game/TwitterGamePhase';
 import { WhatsAppGamePhase } from '@/components/game/WhatsAppGamePhase';
 import { LevelTransition } from '@/components/game/LevelTransition';
-import { generateComments } from '@/utils/commentGenerator';
+import { GeneratingCommentsScreen } from '@/components/game/GeneratingCommentsScreen';
+import { generateLLMComments, clearCommentCache } from '@/utils/llmCommentGenerator';
+import { toast } from 'sonner';
 
 type GamePhase = 
   | 'intro' 
   | 'loading' 
+  | 'generating-youtube'
   | 'youtube-playing' 
+  | 'generating-twitter'
   | 'transition-twitter' 
   | 'twitter-playing' 
+  | 'generating-whatsapp'
   | 'transition-whatsapp' 
   | 'whatsapp-playing' 
   | 'end-won'
@@ -83,20 +88,44 @@ const Index = () => {
   // Track total time used across levels
   const totalTimeUsedRef = useRef(0);
 
-  const generateAllComments = useCallback((config: BotConfig) => {
-    // Generate 10 bots + 10 humans per level = 20 each, total 30 bots across all levels
-    const ytComments = generateComments(config, 20);
-    const twComments = generateComments(config, 20);
-    const waComments = generateComments(config, 20);
-    
-    setYoutubeComments(ytComments);
-    setTwitterComments(twComments);
-    setWhatsappComments(waComments);
-  }, []);
+  const generateYoutubeComments = useCallback(async () => {
+    try {
+      const comments = await generateLLMComments(botConfig, 'youtube');
+      setYoutubeComments(comments);
+      setPhase('youtube-playing');
+    } catch (error) {
+      console.error('Failed to generate YouTube comments:', error);
+      toast.error('Failed to generate comments. Please try again.');
+      setPhase('intro');
+    }
+  }, [botConfig]);
+
+  const generateTwitterComments = useCallback(async () => {
+    try {
+      const comments = await generateLLMComments(botConfig, 'twitter');
+      setTwitterComments(comments);
+      setPhase('twitter-playing');
+    } catch (error) {
+      console.error('Failed to generate Twitter comments:', error);
+      toast.error('Failed to generate comments. Please try again.');
+      setPhase('intro');
+    }
+  }, [botConfig]);
+
+  const generateWhatsappComments = useCallback(async () => {
+    try {
+      const comments = await generateLLMComments(botConfig, 'whatsapp');
+      setWhatsappComments(comments);
+      setPhase('whatsapp-playing');
+    } catch (error) {
+      console.error('Failed to generate WhatsApp comments:', error);
+      toast.error('Failed to generate comments. Please try again.');
+      setPhase('intro');
+    }
+  }, [botConfig]);
 
   const handleStart = () => {
     totalTimeUsedRef.current = 0;
-    generateAllComments(botConfig);
     setPhase('loading');
   };
 
@@ -107,7 +136,7 @@ const Index = () => {
   };
 
   const handleLoadingComplete = () => {
-    setPhase('youtube-playing');
+    setPhase('generating-youtube');
   };
 
   const handleLiveLost = () => {
@@ -153,22 +182,30 @@ const Index = () => {
     setYoutubeComments([]);
     setTwitterComments([]);
     setWhatsappComments([]);
+    clearCommentCache(); // Clear cache on restart
     setHasSetupBots(false); // Reset so user can change bot settings again
     setPhase('intro');
   };
 
   const handleLevelSelect = (level: 1 | 2 | 3) => {
-    // Ensure comments are generated
-    if (youtubeComments.length === 0) {
-      generateAllComments(botConfig);
-    }
-    
     if (level === 1) {
-      setPhase('youtube-playing');
+      if (youtubeComments.length === 0) {
+        setPhase('generating-youtube');
+      } else {
+        setPhase('youtube-playing');
+      }
     } else if (level === 2) {
-      setPhase('twitter-playing');
+      if (twitterComments.length === 0) {
+        setPhase('generating-twitter');
+      } else {
+        setPhase('twitter-playing');
+      }
     } else if (level === 3) {
-      setPhase('whatsapp-playing');
+      if (whatsappComments.length === 0) {
+        setPhase('generating-whatsapp');
+      } else {
+        setPhase('whatsapp-playing');
+      }
     }
   };
 
@@ -209,6 +246,13 @@ const Index = () => {
         />
       )}
 
+      {phase === 'generating-youtube' && (
+        <GeneratingCommentsScreen
+          platform="youtube"
+          onGenerated={generateYoutubeComments}
+        />
+      )}
+
       {phase === 'youtube-playing' && (
         <YouTubeGamePhase
           topic={botConfig.topic}
@@ -225,7 +269,14 @@ const Index = () => {
         <LevelTransition
           fromLevel="YouTube"
           toLevel="Twitter/X"
-          onComplete={() => setPhase('twitter-playing')}
+          onComplete={() => setPhase('generating-twitter')}
+        />
+      )}
+
+      {phase === 'generating-twitter' && (
+        <GeneratingCommentsScreen
+          platform="twitter"
+          onGenerated={generateTwitterComments}
         />
       )}
 
@@ -245,7 +296,14 @@ const Index = () => {
         <LevelTransition
           fromLevel="Twitter/X"
           toLevel="WhatsApp"
-          onComplete={() => setPhase('whatsapp-playing')}
+          onComplete={() => setPhase('generating-whatsapp')}
+        />
+      )}
+
+      {phase === 'generating-whatsapp' && (
+        <GeneratingCommentsScreen
+          platform="whatsapp"
+          onGenerated={generateWhatsappComments}
         />
       )}
 
