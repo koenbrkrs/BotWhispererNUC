@@ -198,7 +198,7 @@ export const printBotsDetected = (
         <div class="stat-row"><span>Bot fraud</span><span>0%</span></div>
         <div class="stat-row"><span>Bots removed</span><span>>1B</span></div>
         <div class="stat-row"><span>Bots in politics</span><span>15%</span></div>
-        <div class="stat-row"><span>Bots on Twitter / X</span><span>61%</span></div>
+        <div class="stat-row"><span>Bots on Botter</span><span>61%</span></div>
         <div class="stat-row"><span>Emissions by bots</span><span>3.7%</span></div>
       </div>
       

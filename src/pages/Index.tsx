@@ -94,7 +94,7 @@ const Index = () => {
       setYoutubeComments(comments);
       setPhase('youtube-playing');
     } catch (error) {
-      console.error('Failed to generate YouTube comments:', error);
+      console.error('Failed to generate RoboTube comments:', error);
       toast.error('Failed to generate comments. Please try again.');
       setPhase('intro');
     }
@@ -106,7 +106,7 @@ const Index = () => {
       setTwitterComments(comments);
       setPhase('twitter-playing');
     } catch (error) {
-      console.error('Failed to generate Twitter comments:', error);
+      console.error('Failed to generate Botter comments:', error);
       toast.error('Failed to generate comments. Please try again.');
       setPhase('intro');
     }
@@ -118,7 +118,7 @@ const Index = () => {
       setWhatsappComments(comments);
       setPhase('whatsapp-playing');
     } catch (error) {
-      console.error('Failed to generate WhatsApp comments:', error);
+      console.error('Failed to generate Botsapp comments:', error);
       toast.error('Failed to generate comments. Please try again.');
       setPhase('intro');
     }
@@ -267,8 +267,8 @@ const Index = () => {
 
       {phase === 'transition-twitter' && (
         <LevelTransition
-          fromLevel="YouTube"
-          toLevel="Twitter/X"
+          fromLevel="RoboTube"
+          toLevel="Botter"
           onComplete={() => setPhase('generating-twitter')}
         />
       )}
@@ -294,8 +294,8 @@ const Index = () => {
 
       {phase === 'transition-whatsapp' && (
         <LevelTransition
-          fromLevel="Twitter/X"
-          toLevel="WhatsApp"
+          fromLevel="Botter"
+          toLevel="Botsapp"
           onComplete={() => setPhase('generating-whatsapp')}
         />
       )}

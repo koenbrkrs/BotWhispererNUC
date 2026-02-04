@@ -1,5 +1,6 @@
 import { Search, Settings } from 'lucide-react';
 import { HeaderScoreboard } from '../game/HeaderScoreboard';
+import botterLogo from '@/assets/botter-logo.png';
 
 interface TwitterHeaderProps {
   scoreboardProps?: {
@@ -20,11 +21,9 @@ export const TwitterHeader = ({ scoreboardProps }: TwitterHeaderProps) => {
   return (
     <header className="fixed top-0 left-0 right-0 z-40 bg-tw-bg-primary/80 backdrop-blur-md border-b border-tw-border">
       <div className="flex items-center justify-between px-4 h-14">
-        {/* Logo - dimmed */}
+        {/* Logo */}
         <div className="flex items-center">
-          <svg viewBox="0 0 24 24" className="w-8 h-8 fill-current" style={{ color: dimmedColor }}>
-            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-          </svg>
+          <img src={botterLogo} alt="Botter" className="w-8 h-8 rounded-full" />
         </div>
 
         {/* Search - dimmed */}

@@ -26,11 +26,11 @@ interface GenerateRequest {
 const getPlatformContext = (platform: string): string => {
   switch (platform) {
     case 'youtube':
-      return 'YouTube video comments section';
+      return 'RoboTube video comments section';
     case 'twitter':
-      return 'X/Twitter replies and quote tweets';
+      return 'Botter replies and quote posts';
     case 'whatsapp':
-      return 'WhatsApp group chat messages';
+      return 'Botsapp group chat messages';
     default:
       return 'social media';
   }

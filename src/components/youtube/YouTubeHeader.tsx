@@ -1,5 +1,5 @@
 import { Menu, Search, Mic, Video, Bell } from 'lucide-react';
-import youtubeLogo from '@/assets/youtube-logo.png';
+import robotubeLogo from '@/assets/robotube-logo.png';
 import { HeaderScoreboard } from '../game/HeaderScoreboard';
 import { ReactNode } from 'react';
 
@@ -26,12 +26,12 @@ export const YouTubeHeader = ({ onMenuClick, scoreboardProps }: YouTubeHeaderPro
       <div className="flex items-center gap-4">
         <button 
           onClick={onMenuClick}
-          className="p-2 hover:bg-yt-hover rounded-full transition-colors"
+          className="p-2 hover:bg-yt-hover rounded-full transition-colors hidden"
         >
           <Menu className="w-6 h-6" style={{ color: dimmedColor }} />
         </button>
-        <div className="flex items-center gap-1 opacity-50">
-          <img src={youtubeLogo} alt="YouTube" className="h-5 w-auto grayscale" />
+        <div className="flex items-center gap-1">
+          <img src={robotubeLogo} alt="RoboTube" className="h-8 w-auto" />
         </div>
       </div>
 

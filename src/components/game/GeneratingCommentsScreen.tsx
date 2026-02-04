@@ -13,9 +13,9 @@ const platformColors = {
 };
 
 const platformNames = {
-  youtube: 'YouTube',
-  twitter: 'Twitter/X',
-  whatsapp: 'WhatsApp',
+  youtube: 'RoboTube',
+  twitter: 'Botter',
+  whatsapp: 'Botsapp',
 };
 
 const messages = [
