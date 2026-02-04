@@ -1,6 +1,6 @@
 // Utility to format topics into broader questions/statements for each platform
 
-export const formatTopicForYouTube = (topic: string): string => {
+export const formatTopicForRoboTube = (topic: string): string => {
   const topicQuestions: Record<string, string> = {
     "Women's rights": "Should Women Have Equal Rights in All Areas of Society?",
     "Data centers": "Are Data Centers Destroying Our Environment?",
@@ -10,7 +10,7 @@ export const formatTopicForYouTube = (topic: string): string => {
   return topicQuestions[topic] || `What Do You Think About ${topic}?`;
 };
 
-export const formatTopicForTwitter = (topic: string): string => {
+export const formatTopicForBotter = (topic: string): string => {
   const topicStatements: Record<string, string> = {
     "Women's rights": "Women deserve equal pay, reproductive rights, and freedom from discrimination. The fight for women's rights is far from over. Where do you stand?",
     "Data centers": "Data centers are consuming massive amounts of energy and water while powering our digital lives. Should tech companies be forced to go green?",
@@ -20,7 +20,7 @@ export const formatTopicForTwitter = (topic: string): string => {
   return topicStatements[topic] || `Let's talk about ${topic}. What are your thoughts on this important issue?`;
 };
 
-export const formatTopicForWhatsApp = (topic: string): string => {
+export const formatTopicForBotsapp = (topic: string): string => {
   const topicNames: Record<string, string> = {
     "Women's rights": "Women's Rights Discussion 👩‍⚖️",
     "Data centers": "Tech & Environment Debate 🌍",
@@ -29,3 +29,8 @@ export const formatTopicForWhatsApp = (topic: string): string => {
   };
   return topicNames[topic] || `${topic} Discussion 💬`;
 };
+
+// Keep old names as aliases for backward compatibility
+export const formatTopicForYouTube = formatTopicForRoboTube;
+export const formatTopicForTwitter = formatTopicForBotter;
+export const formatTopicForWhatsApp = formatTopicForBotsapp;

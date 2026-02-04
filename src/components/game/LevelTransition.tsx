@@ -30,8 +30,8 @@ export const LevelTransition = ({ fromLevel, toLevel, onComplete }: LevelTransit
   }, [onComplete]);
 
   const getLevelColor = (level: string) => {
-    if (level.includes('Twitter')) return colors.twitter;
-    if (level.includes('WhatsApp')) return colors.whatsapp;
+    if (level.includes('Botter')) return colors.twitter;
+    if (level.includes('Botsapp')) return colors.whatsapp;
     return colors.youtube;
   };
 

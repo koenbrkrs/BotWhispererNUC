@@ -1,4 +1,5 @@
 import { Search, MessageCircle, MoreVertical, Users, Archive, Star, Settings } from 'lucide-react';
+import botsappLogo from '@/assets/botsapp-logo.png';
 
 // Dimmed color for non-interactive elements
 const dimmedColor = '#787878';
@@ -15,11 +16,12 @@ const dummyChats = [
 export const WhatsAppSidebar = ({ groupName }: WhatsAppSidebarProps) => {
   return (
     <div className="w-[400px] bg-wa-bg-secondary border-r border-wa-border flex flex-col max-lg:hidden">
-      {/* Header - dimmed */}
+      {/* Header with Botsapp logo */}
       <div className="h-[60px] bg-wa-bg-header px-4 flex items-center justify-between">
-        <div 
-          className="w-10 h-10 rounded-full"
-          style={{ backgroundColor: dimmedColor }}
+        <img 
+          src={botsappLogo} 
+          alt="Botsapp" 
+          className="w-10 h-10 rounded-full bg-[#00FF41]"
         />
         <div className="flex items-center gap-6">
           <Users className="w-5 h-5 cursor-not-allowed" style={{ color: dimmedColor }} />
