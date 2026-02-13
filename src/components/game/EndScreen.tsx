@@ -10,6 +10,7 @@ interface EndScreenProps {
   whatsappResults: GameResults;
   botConfig: BotConfig;
   totalTimeUsed: number;
+  consent: boolean;
   onRestart: () => void;
 }
 
@@ -24,6 +25,7 @@ export const EndScreen = ({
   whatsappResults, 
   botConfig,
   totalTimeUsed,
+  consent,
   onRestart 
 }: EndScreenProps) => {
   const [playerCode, setPlayerCode] = useState('');
@@ -54,7 +56,8 @@ export const EndScreen = ({
     const rank = updatedScores.findIndex(s => s.code === code) + 1;
     setPlayerRank(rank);
 
-    // Log game result to Zapier
+    // Log game result to Zapier only if user consented
+    if (consent) {
     fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/log-game-result`, {
       method: 'POST',
       headers: {
@@ -79,7 +82,8 @@ export const EndScreen = ({
         timeUsed: totalTimeUsed,
       }),
     }).catch(err => console.error('Failed to log game result:', err));
-  }, [totalDetected, totalWrong, totalTimeUsed]);
+    }
+  }, [totalDetected, totalWrong, totalTimeUsed, consent]);
 
   const currentColor = won ? winColor : loseColor;
 
