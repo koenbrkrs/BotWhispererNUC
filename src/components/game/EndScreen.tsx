@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { GameResults, BotConfig, ScoreEntry } from '@/types/game';
 import { generatePlayerCode, calculateScore, saveScore, getScores } from '@/utils/scoreManager';
 import { printBotsDetected, printBotSetup } from '@/utils/receiptPrinter';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface EndScreenProps {
   won: boolean;
@@ -56,32 +58,42 @@ export const EndScreen = ({
     const rank = updatedScores.findIndex(s => s.code === code) + 1;
     setPlayerRank(rank);
 
-    // Log game result to Zapier only if user consented
+    // Save game session to database if user consented
     if (consent) {
-    fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/log-game-result`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-      },
-      body: JSON.stringify({
+      const sessionData = {
         topic: botConfig.topic,
         stance: botConfig.stance,
-        friendlyAggressive: botConfig.friendlyAggressive,
-        logicalIllogical: botConfig.logicalIllogical,
-        humorSerious: botConfig.humorSerious,
-        sarcasmDirect: botConfig.sarcasmDirect,
-        openClosed: botConfig.openClosed,
-        minimalVerbose: botConfig.minimalVerbose,
-        emojiAmount: botConfig.emojiAmount,
-        botsFound: totalDetected,
-        humansMisidentified: totalWrong,
-        totalBots: totalBots,
+        friendly: 100 - botConfig.friendlyAggressive,
+        aggressive: botConfig.friendlyAggressive,
+        logical: 100 - botConfig.logicalIllogical,
+        illogical: botConfig.logicalIllogical,
+        humor: 100 - botConfig.humorSerious,
+        serious: botConfig.humorSerious,
+        sarcasm: 100 - botConfig.sarcasmDirect,
+        direct: botConfig.sarcasmDirect,
+        open_minded: 100 - botConfig.openClosed,
+        closed_minded: botConfig.openClosed,
+        minimal: 100 - botConfig.minimalVerbose,
+        verbose_level: botConfig.minimalVerbose,
+        emoji_amount: botConfig.emojiAmount,
+        bots_found: totalDetected,
+        humans_misidentified: totalWrong,
+        total_bots: totalBots,
         won,
         score,
-        timeUsed: totalTimeUsed,
-      }),
-    }).catch(err => console.error('Failed to log game result:', err));
+        time_used: totalTimeUsed,
+        player_code: code,
+        consent_given: true,
+      };
+
+      supabase.from('game_sessions').insert(sessionData)
+        .then(({ error }) => {
+          if (error) {
+            console.error('Failed to save session:', error);
+          } else {
+            toast.success('Session saved to cloud');
+          }
+        });
     }
   }, [totalDetected, totalWrong, totalTimeUsed, consent]);
 

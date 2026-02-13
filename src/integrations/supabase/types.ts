@@ -14,7 +14,90 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      game_sessions: {
+        Row: {
+          aggressive: number
+          bots_found: number
+          closed_minded: number
+          consent_given: boolean
+          created_at: string
+          direct: number
+          emoji_amount: number
+          friendly: number
+          humans_misidentified: number
+          humor: number
+          id: string
+          illogical: number
+          logical: number
+          minimal: number
+          open_minded: number
+          player_code: string | null
+          sarcasm: number
+          score: number
+          serious: number
+          stance: string
+          time_used: number
+          topic: string
+          total_bots: number
+          verbose_level: number
+          won: boolean
+        }
+        Insert: {
+          aggressive: number
+          bots_found: number
+          closed_minded: number
+          consent_given?: boolean
+          created_at?: string
+          direct: number
+          emoji_amount: number
+          friendly: number
+          humans_misidentified: number
+          humor: number
+          id?: string
+          illogical: number
+          logical: number
+          minimal: number
+          open_minded: number
+          player_code?: string | null
+          sarcasm: number
+          score: number
+          serious: number
+          stance: string
+          time_used: number
+          topic: string
+          total_bots: number
+          verbose_level: number
+          won: boolean
+        }
+        Update: {
+          aggressive?: number
+          bots_found?: number
+          closed_minded?: number
+          consent_given?: boolean
+          created_at?: string
+          direct?: number
+          emoji_amount?: number
+          friendly?: number
+          humans_misidentified?: number
+          humor?: number
+          id?: string
+          illogical?: number
+          logical?: number
+          minimal?: number
+          open_minded?: number
+          player_code?: string | null
+          sarcasm?: number
+          score?: number
+          serious?: number
+          stance?: string
+          time_used?: number
+          topic?: string
+          total_bots?: number
+          verbose_level?: number
+          won?: boolean
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
