@@ -45,7 +45,7 @@ export const TwitterGamePhase = ({
   useEffect(() => {
     if (lives <= 0) {
       setIsRunning(false);
-      onGameOver();
+      handleGameEnd(false);
     }
   }, [lives]);
 
