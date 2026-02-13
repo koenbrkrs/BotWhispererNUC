@@ -53,6 +53,32 @@ export const EndScreen = ({
     // Find player rank
     const rank = updatedScores.findIndex(s => s.code === code) + 1;
     setPlayerRank(rank);
+
+    // Log game result to Zapier
+    fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/log-game-result`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+      },
+      body: JSON.stringify({
+        topic: botConfig.topic,
+        stance: botConfig.stance,
+        friendlyAggressive: botConfig.friendlyAggressive,
+        logicalIllogical: botConfig.logicalIllogical,
+        humorSerious: botConfig.humorSerious,
+        sarcasmDirect: botConfig.sarcasmDirect,
+        openClosed: botConfig.openClosed,
+        minimalVerbose: botConfig.minimalVerbose,
+        emojiAmount: botConfig.emojiAmount,
+        botsFound: totalDetected,
+        humansMisidentified: totalWrong,
+        totalBots: totalBots,
+        won,
+        score,
+        timeUsed: totalTimeUsed,
+      }),
+    }).catch(err => console.error('Failed to log game result:', err));
   }, [totalDetected, totalWrong, totalTimeUsed]);
 
   const currentColor = won ? winColor : loseColor;

@@ -1,1 +1,4 @@
 project_id = "vdnpjytpfamwakqvzcof"
+
+[functions.log-game-result]
+verify_jwt = false
