@@ -49,7 +49,7 @@ export const YouTubeGamePhase = ({
   useEffect(() => {
     if (lives <= 0) {
       setIsRunning(false);
-      onGameOver();
+      handleGameEnd(false);
     }
   }, [lives]);
 

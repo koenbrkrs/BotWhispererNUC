@@ -146,27 +146,39 @@ const Index = () => {
   };
 
   const handleGameOver = () => {
+    // No longer used directly - game over is handled via onComplete + lives check
     setPhase('end-lost');
   };
 
   const handleYoutubeComplete = (results: GameResults) => {
     setYoutubeResults(results);
-    // Add time used (120 - remaining)
     totalTimeUsedRef.current += (120 - results.timeRemaining);
-    setLives(3); // Reset lives for next level
+    if (lives <= 0) {
+      setPhase('end-lost');
+      return;
+    }
+    setLives(3);
     setPhase('transition-twitter');
   };
 
   const handleTwitterComplete = (results: GameResults) => {
     setTwitterResults(results);
     totalTimeUsedRef.current += (120 - results.timeRemaining);
-    setLives(3); // Reset lives for next level
+    if (lives <= 0) {
+      setPhase('end-lost');
+      return;
+    }
+    setLives(3);
     setPhase('transition-whatsapp');
   };
 
   const handleWhatsAppComplete = (results: GameResults) => {
     setWhatsappResults(results);
     totalTimeUsedRef.current += (120 - results.timeRemaining);
+    if (lives <= 0) {
+      setPhase('end-lost');
+      return;
+    }
     setPhase('end-won');
   };
 
