@@ -4,11 +4,9 @@ interface IntroScreenProps {
   onStart: () => void;
   onSetupBots: () => void;
   hasSetupBots: boolean;
-  consent: boolean;
-  onConsentChange: (value: boolean) => void;
 }
 
-export const IntroScreen = ({ onStart, onSetupBots, hasSetupBots, consent, onConsentChange }: IntroScreenProps) => {
+export const IntroScreen = ({ onStart, onSetupBots, hasSetupBots }: IntroScreenProps) => {
   const [dots, setDots] = useState('.');
 
   useEffect(() => {
@@ -45,19 +43,6 @@ export const IntroScreen = ({ onStart, onSetupBots, hasSetupBots, consent, onCon
           <p className="pl-4">[2] Suspect that a comment is a bot? Press it.</p>
           <p className="pl-4">[3] Correct = Disappears, Wrong = Turns red.</p>
         </div>
-
-        {/* Consent checkbox */}
-        <label className="flex items-start gap-3 text-white/80 text-xs md:text-sm max-w-xl mx-auto cursor-pointer text-left">
-          <input
-            type="checkbox"
-            checked={consent}
-            onChange={(e) => onConsentChange(e.target.checked)}
-            className="mt-1 h-4 w-4 shrink-0 accent-[#EA4237]"
-          />
-          <span>
-            I consent to my anonymized game performance (topic, stance, sliders, detection results) being shared with our research sponsor (Surfshark) for improving online safety and bot detection tools.
-          </span>
-        </label>
 
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">

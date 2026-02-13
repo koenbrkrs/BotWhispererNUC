@@ -8,8 +8,9 @@ const accentColor = '#EA4237';
 interface BotSetupModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (config: BotConfig) => void;
+  onConfirm: (config: BotConfig, consent: boolean) => void;
   initialConfig?: BotConfig;
+  initialConsent?: boolean;
 }
 
 const TOPICS = [
@@ -80,7 +81,7 @@ const Slider = ({
   </div>
 );
 
-export const BotSetupModal = ({ isOpen, onClose, onConfirm, initialConfig }: BotSetupModalProps) => {
+export const BotSetupModal = ({ isOpen, onClose, onConfirm, initialConfig, initialConsent }: BotSetupModalProps) => {
   const getDefaultStance = (topic: string) => STANCE_OPTIONS[topic]?.[0] || '';
   
   const [config, setConfig] = useState<BotConfig>(initialConfig || {
@@ -94,6 +95,8 @@ export const BotSetupModal = ({ isOpen, onClose, onConfirm, initialConfig }: Bot
     topic: TOPICS[0],
     stance: getDefaultStance(TOPICS[0])
   });
+
+  const [consentChecked, setConsentChecked] = useState(initialConsent ?? false);
 
   // Update stance when topic changes
   useEffect(() => {
@@ -114,7 +117,7 @@ export const BotSetupModal = ({ isOpen, onClose, onConfirm, initialConfig }: Bot
   };
 
   const handleConfirm = () => {
-    onConfirm(config);
+    onConfirm(config, consentChecked);
     onClose();
   };
 
@@ -219,6 +222,21 @@ export const BotSetupModal = ({ isOpen, onClose, onConfirm, initialConfig }: Bot
             value={config.emojiAmount}
             onChange={(v) => setConfig(prev => ({ ...prev, emojiAmount: v }))}
           />
+        </div>
+
+        {/* Consent */}
+        <div className="px-6 pb-2">
+          <label className="flex items-start gap-3 text-white/80 text-xs cursor-pointer text-left">
+            <input
+              type="checkbox"
+              checked={consentChecked}
+              onChange={(e) => setConsentChecked(e.target.checked)}
+              className="mt-0.5 h-4 w-4 shrink-0 accent-[#EA4237]"
+            />
+            <span>
+              I consent to my anonymized game performance (topic, stance, sliders, detection results) being shared with our research sponsor (Surfshark) for improving online safety and bot detection tools.
+            </span>
+          </label>
         </div>
 
         {/* Footer */}
