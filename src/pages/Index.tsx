@@ -130,8 +130,9 @@ const Index = () => {
     setPhase('loading');
   };
 
-  const handleSetupConfirm = (config: BotConfig) => {
+  const handleSetupConfirm = (config: BotConfig, consentValue: boolean) => {
     setBotConfig(config);
+    setConsent(consentValue);
     setShowSetupModal(false);
     setHasSetupBots(true);
   };
@@ -228,14 +229,13 @@ const Index = () => {
             onStart={handleStart}
             onSetupBots={() => setShowSetupModal(true)}
             hasSetupBots={hasSetupBots}
-            consent={consent}
-            onConsentChange={setConsent}
           />
           <BotSetupModal
             isOpen={showSetupModal}
             onClose={() => setShowSetupModal(false)}
             onConfirm={handleSetupConfirm}
             initialConfig={botConfig}
+            initialConsent={consent}
           />
         </>
       )}
