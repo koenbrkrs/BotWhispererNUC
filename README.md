@@ -1,74 +1,54 @@
-# Welcome to your Lovable project
+# BotWhispererNUC
 
-## Project info
+**Bot or Not?** — A three-level social deduction game where you detect bot-generated comments across simulated YouTube, Twitter/X, and WhatsApp interfaces.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Overview
 
-## How can I edit this code?
+Players are shown a mix of real human comments and AI-generated bot comments on hot-button topics. The goal is to correctly identify which comments are written by bots and which are real — testing your ability to spot AI-generated content in the wild.
 
-There are several ways of editing your application.
+## Tech Stack
 
-**Use Lovable**
+- **Vite** + **React** + **TypeScript**
+- **Tailwind CSS** for styling
+- **Ollama** (local LLM) for generating bot comments
+- **Electron** for museum/kiosk mode
+- **SerialPort** for Arduino integration (museum mode)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## Getting Started
 
-Changes made via Lovable will be committed automatically to this repo.
+### Prerequisites
 
-**Use your preferred IDE**
+- Node.js & npm
+- [Ollama](https://ollama.ai/) installed locally
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+### Development
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Install dependencies
+npm install
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start dev server (also starts Ollama and the logger)
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Museum / Kiosk Mode
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```sh
+# Build and launch in Electron kiosk mode
+npm run museum
+```
 
-**Use GitHub Codespaces**
+## Project Structure
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
-# BotWhispererNUC
+```
+src/
+├── components/
+│   ├── game/        # Core game UI (intro, end screen, HUD, etc.)
+│   ├── youtube/     # YouTube-style comment interface
+│   ├── twitter/     # Twitter/X-style feed interface
+│   └── whatsapp/    # WhatsApp-style chat interface
+├── hooks/           # Custom React hooks
+├── utils/           # LLM generation, scoring, logging
+├── pages/           # Route pages
+└── types/           # TypeScript type definitions
+```

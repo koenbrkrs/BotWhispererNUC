@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 Datalogging/
+bun.lockb
+master_log.csv
+.env
 
 # Editor directories and files
 .vscode/*
