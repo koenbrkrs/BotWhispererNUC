@@ -56,8 +56,13 @@ Topic: ${config.topic}
 Stance: ${config.stance}
 Friendly: ${100 - config.friendlyAggressive}% | Logical: ${100 - config.logicalIllogical}% | Humor: ${100 - config.humorSerious}% | Sarcasm: ${100 - config.sarcasmDirect}% | Brevity: ${100 - config.minimalVerbose}% | Emoji: ${config.emojiAmount}%
 
+Rules:
+- Each comment MUST be 35 words or fewer.
+- Write exactly 10 comments.
+- Match the personality settings above.
+
 Output format: { "bot_comments": ["comment1", "comment2", ..., "comment10"] }
-Generate exactly 10 short comments. No extra keys.`;
+No extra keys, no extra text outside the JSON.`;
 
   try {
     const response = await fetch('http://localhost:11434/api/chat', {
@@ -68,12 +73,12 @@ Generate exactly 10 short comments. No extra keys.`;
         format: 'json',
         stream: false,
         options: {
-          num_predict: 350,   // cap output tokens → faster generation
+          num_predict: 800,   // raised from 350 — enough for 10 x 35-word comments
           temperature: 0.7,
         },
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: 'Generate the 10 comments.' },
+          { role: 'user', content: 'Generate exactly 10 comments now.' },
         ],
       }),
     });
@@ -84,13 +89,25 @@ Generate exactly 10 short comments. No extra keys.`;
 
     const data = await response.json();
     const parsed = JSON.parse(data.message.content);
-    const comments: string[] = parsed.bot_comments || [];
+    let comments: string[] = parsed.bot_comments || [];
 
-    if (comments.length === 0) {
-      throw new Error('LLM returned empty bot_comments array');
+    // Truncate any comment that exceeds 35 words
+    comments = comments.map(c => {
+      const words = c.trim().split(/\s+/);
+      return words.length > 35 ? words.slice(0, 35).join(' ') + '…' : c.trim();
+    });
+
+    // If LLM returned fewer than 10, pad with shuffled fallbacks
+    if (comments.length < 10) {
+      console.warn(`LLM returned only ${comments.length} comments — padding with fallbacks`);
+      const shuffledFallbacks = shuffleArray([...FALLBACK_BOT_COMMENTS]);
+      while (comments.length < 10) {
+        comments.push(shuffledFallbacks[comments.length % shuffledFallbacks.length]);
+      }
     }
 
-    return comments;
+    // Always return exactly 10
+    return comments.slice(0, 10);
   } catch (error) {
     console.error('Local LLM Error', error);
     return [...FALLBACK_BOT_COMMENTS];

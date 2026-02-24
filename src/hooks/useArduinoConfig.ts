@@ -117,6 +117,7 @@ export function useArduinoConfig() {
     const [isMuseumMode] = useState(() => detectMuseumMode());
     const [arduinoConfig, setArduinoConfig] = useState<BotConfig | null>(null);
     const [hasReceivedConfig, setHasReceivedConfig] = useState(false);
+    const [listeningKey, setListeningKey] = useState(0); // incremented on reset to re-trigger the listener
     const unsubRef = useRef<(() => void) | null>(null);
 
     useEffect(() => {
@@ -139,12 +140,13 @@ export function useArduinoConfig() {
         return () => {
             unsubRef.current?.();
         };
-    }, [isMuseumMode]);
+    }, [isMuseumMode, listeningKey]);
 
-    /** Reset so the hook can receive a fresh config (used on game restart) */
+    /** Reset so the hook can receive a fresh config (used on game restart). Also re-subscribes the listener. */
     const resetConfig = () => {
         setArduinoConfig(null);
         setHasReceivedConfig(false);
+        setListeningKey(k => k + 1); // causes useEffect to re-run → fresh IPC subscription
     };
 
     return { isMuseumMode, arduinoConfig, hasReceivedConfig, resetConfig };

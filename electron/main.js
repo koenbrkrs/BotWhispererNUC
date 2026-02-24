@@ -19,7 +19,7 @@ async function initSerial() {
     const { SerialPort } = await import('serialport');
     const { ReadlineParser } = await import('@serialport/parser-readline');
 
-    const SERIAL_PATH = '/dev/cu.usbmodem15787700432';
+    const SERIAL_PATH = '/dev/cu.usbmodem2101';
     const BAUD_RATE = 9600;
 
     serialPort = new SerialPort({ path: SERIAL_PATH, baudRate: BAUD_RATE });
