@@ -15,7 +15,7 @@ interface BotSetupModalProps {
 
 const TOPICS = [
   "Women's rights",
-  "Data centers",
+  "Data centres",
   "Immigration",
   "Pineapple on pizza"
 ];
@@ -51,13 +51,13 @@ const STANCE_OPTIONS: Record<string, string[]> = {
   ]
 };
 
-const Slider = ({ 
-  label, 
-  leftLabel, 
-  rightLabel, 
-  value, 
-  onChange 
-}: { 
+const Slider = ({
+  label,
+  leftLabel,
+  rightLabel,
+  value,
+  onChange
+}: {
   label: string;
   leftLabel: string;
   rightLabel: string;
@@ -83,7 +83,7 @@ const Slider = ({
 
 export const BotSetupModal = ({ isOpen, onClose, onConfirm, initialConfig, initialConsent }: BotSetupModalProps) => {
   const getDefaultStance = (topic: string) => STANCE_OPTIONS[topic]?.[0] || '';
-  
+
   const [config, setConfig] = useState<BotConfig>(initialConfig || {
     friendlyAggressive: 50,
     logicalIllogical: 50,
@@ -125,12 +125,12 @@ export const BotSetupModal = ({ isOpen, onClose, onConfirm, initialConfig, initi
 
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 font-retro">
-      <div 
+      <div
         className="bg-gradient-to-b from-[#1a1a1a] to-[#0a0a0a] border-2 rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto"
         style={{ borderColor: accentColor }}
       >
         {/* Header */}
-        <div 
+        <div
           className="flex items-center justify-between p-4 border-b"
           style={{ borderColor: `${accentColor}50` }}
         >
@@ -240,7 +240,7 @@ export const BotSetupModal = ({ isOpen, onClose, onConfirm, initialConfig, initi
         </div>
 
         {/* Footer */}
-        <div 
+        <div
           className="p-4 border-t"
           style={{ borderColor: `${accentColor}50` }}
         >

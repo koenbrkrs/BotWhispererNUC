@@ -72,17 +72,14 @@ export const Tweet = ({
     <article
       ref={containerRef}
       onClick={handleClick}
-      className={`px-4 py-3 border-b border-tw-border hover:bg-tw-bg-hover transition-all cursor-pointer ${
-        mode === 'playing' && isGuessed
+      className={`px-4 py-3 border-b border-tw-border hover:bg-tw-bg-hover transition-all cursor-pointer min-h-[60px] ${mode === 'playing' && isGuessed
           ? isCorrect
             ? ''
             : 'bg-red-500/20 animate-shake'
           : ''
-      } ${
-        mode === 'setup' && isToggled ? 'bg-tw-blue/20 border-l-4 border-l-tw-blue' : ''
-      } ${
-        mode === 'reveal' && comment.isBotted ? 'bg-tw-blue/10 border-l-4 border-l-tw-blue' : ''
-      }`}
+        } ${mode === 'setup' && isToggled ? 'bg-tw-blue/20 border-l-4 border-l-tw-blue' : ''
+        } ${mode === 'reveal' && comment.isBotted ? 'bg-tw-blue/10 border-l-4 border-l-tw-blue' : ''
+        }`}
     >
       <div className="flex gap-3">
         {/* Avatar */}
@@ -107,7 +104,7 @@ export const Tweet = ({
                 </span>
               )}
             </div>
-            <button 
+            <button
               className="p-1.5 hover:bg-tw-blue/20 rounded-full transition-colors"
               onClick={(e) => e.stopPropagation()}
             >
@@ -120,7 +117,7 @@ export const Tweet = ({
 
           {/* Actions */}
           <div className="flex items-center justify-between mt-3 max-w-md">
-            <button 
+            <button
               className="flex items-center gap-2 group"
               onClick={(e) => e.stopPropagation()}
             >
@@ -130,7 +127,7 @@ export const Tweet = ({
               <span className="text-sm text-tw-text-secondary group-hover:text-tw-blue">{replies}</span>
             </button>
 
-            <button 
+            <button
               className={`flex items-center gap-2 group ${retweeted ? 'text-green-500' : ''}`}
               onClick={(e) => {
                 e.stopPropagation();
@@ -145,7 +142,7 @@ export const Tweet = ({
               </span>
             </button>
 
-            <button 
+            <button
               className={`flex items-center gap-2 group ${liked ? 'text-pink-500' : ''}`}
               onClick={(e) => {
                 e.stopPropagation();
@@ -160,7 +157,7 @@ export const Tweet = ({
               </span>
             </button>
 
-            <button 
+            <button
               className="flex items-center gap-2 group"
               onClick={(e) => e.stopPropagation()}
             >
@@ -170,7 +167,7 @@ export const Tweet = ({
               <span className="text-sm text-tw-text-secondary group-hover:text-tw-blue">{formatNumber(views)}</span>
             </button>
 
-            <button 
+            <button
               className="p-2 rounded-full hover:bg-tw-blue/20 transition-colors"
               onClick={(e) => e.stopPropagation()}
             >

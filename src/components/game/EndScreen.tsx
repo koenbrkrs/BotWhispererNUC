@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 import { GameResults, BotConfig, ScoreEntry } from '@/types/game';
 import { generatePlayerCode, calculateScore, saveScore, getScores } from '@/utils/scoreManager';
 import { printBotsDetected, printBotSetup } from '@/utils/receiptPrinter';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { saveGameLog } from '@/utils/GameLogger';
 
 interface EndScreenProps {
   won: boolean;
@@ -20,15 +19,15 @@ interface EndScreenProps {
 const winColor = '#00FF41';
 const loseColor = '#EA4237';
 
-export const EndScreen = ({ 
-  won, 
-  youtubeResults, 
-  twitterResults, 
-  whatsappResults, 
+export const EndScreen = ({
+  won,
+  youtubeResults,
+  twitterResults,
+  whatsappResults,
   botConfig,
   totalTimeUsed,
   consent,
-  onRestart 
+  onRestart
 }: EndScreenProps) => {
   const [playerCode, setPlayerCode] = useState('');
   const [scores, setScores] = useState<ScoreEntry[]>([]);
@@ -44,57 +43,48 @@ export const EndScreen = ({
     // Generate unique player code
     const code = generatePlayerCode();
     setPlayerCode(code);
-    
+
     // Calculate score
     const score = calculateScore(totalDetected, totalWrong, totalTimeUsed);
     setHighscore(score);
-    
+
     // Save score and get updated leaderboard
     const entry: ScoreEntry = { code, score, time: totalTimeUsed };
     const updatedScores = saveScore(entry);
     setScores(updatedScores);
-    
+
     // Find player rank
     const rank = updatedScores.findIndex(s => s.code === code) + 1;
     setPlayerRank(rank);
 
-    // Save game session to database if user consented
-    if (consent) {
-      const sessionData = {
-        topic: botConfig.topic,
-        stance: botConfig.stance,
-        friendly: 100 - botConfig.friendlyAggressive,
-        aggressive: botConfig.friendlyAggressive,
-        logical: 100 - botConfig.logicalIllogical,
-        illogical: botConfig.logicalIllogical,
-        humor: 100 - botConfig.humorSerious,
-        serious: botConfig.humorSerious,
-        sarcasm: 100 - botConfig.sarcasmDirect,
-        direct: botConfig.sarcasmDirect,
-        open_minded: 100 - botConfig.openClosed,
-        closed_minded: botConfig.openClosed,
-        minimal: 100 - botConfig.minimalVerbose,
-        verbose_level: botConfig.minimalVerbose,
-        emoji_amount: botConfig.emojiAmount,
-        bots_found: totalDetected,
-        humans_misidentified: totalWrong,
-        total_bots: totalBots,
-        won,
-        score,
-        time_used: totalTimeUsed,
-        player_code: code,
-        consent_given: true,
-      };
+    // Build session data once for all loggers
+    const sessionData = {
+      topic: botConfig.topic,
+      stance: botConfig.stance,
+      friendly: 100 - botConfig.friendlyAggressive,
+      aggressive: botConfig.friendlyAggressive,
+      logical: 100 - botConfig.logicalIllogical,
+      illogical: botConfig.logicalIllogical,
+      humor: 100 - botConfig.humorSerious,
+      serious: botConfig.humorSerious,
+      sarcasm: 100 - botConfig.sarcasmDirect,
+      direct: botConfig.sarcasmDirect,
+      open_minded: 100 - botConfig.openClosed,
+      closed_minded: botConfig.openClosed,
+      minimal: 100 - botConfig.minimalVerbose,
+      verbose_level: botConfig.minimalVerbose,
+      emoji_amount: botConfig.emojiAmount,
+      bots_found: totalDetected,
+      humans_misidentified: totalWrong,
+      total_bots: totalBots,
+      won,
+      score,
+      time_used: totalTimeUsed,
+      player_code: code,
+    };
 
-      supabase.from('game_sessions').insert(sessionData)
-        .then(({ error }) => {
-          if (error) {
-            console.error('Failed to save session:', error);
-          } else {
-            toast.success('Session saved to cloud');
-          }
-        });
-    }
+    // Hybrid logger: localStorage + CSV on disk (silent failover)
+    saveGameLog(sessionData, consent);
   }, [totalDetected, totalWrong, totalTimeUsed, consent]);
 
   const currentColor = won ? winColor : loseColor;
@@ -125,8 +115,8 @@ export const EndScreen = ({
               const isPlayer = entry.code === playerCode;
               const rankLabels = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'];
               return (
-                <div 
-                  key={entry.code + i} 
+                <div
+                  key={entry.code + i}
                   className="grid grid-cols-3 gap-4 text-lg"
                   style={{ color: isPlayer ? currentColor : 'rgba(255,255,255,0.9)' }}
                 >
@@ -137,7 +127,7 @@ export const EndScreen = ({
               );
             })
           ) : (
-            <div 
+            <div
               className="grid grid-cols-3 gap-4 text-lg"
               style={{ color: currentColor }}
             >
@@ -147,7 +137,7 @@ export const EndScreen = ({
             </div>
           )}
           {playerRank > 10 && (
-            <div 
+            <div
               className="grid grid-cols-3 gap-4 text-lg mt-4 pt-4 border-t border-white/20"
               style={{ color: currentColor }}
             >
@@ -160,7 +150,7 @@ export const EndScreen = ({
 
         {/* Results */}
         <div className="flex-1 space-y-6">
-          <h1 
+          <h1
             className="text-4xl md:text-5xl"
             style={{ color: currentColor }}
           >
@@ -185,18 +175,30 @@ export const EndScreen = ({
 
       {/* Bottom buttons */}
       <div className="flex flex-col sm:flex-row gap-4 mt-12">
-        <button 
+        <button
           onClick={handlePrintBotsDetected}
           className="px-8 py-3 bg-retro-button text-retro-button-text text-lg hover:bg-retro-button-hover transition-colors border-2 border-retro-button-text/20"
         >
           Print receipt Bots caught
         </button>
-        <button 
+        <button
           onClick={handlePrintBotSetup}
           className="px-8 py-3 bg-retro-button text-retro-button-text text-lg hover:bg-retro-button-hover transition-colors border-2 border-retro-button-text/20"
         >
           Print receipt Bots input
         </button>
+      </div>
+
+      {/* Collaboration footer */}
+      <div className="mt-10 pt-6 border-t border-white/10 w-full max-w-5xl flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-3 flex-wrap justify-center sm:justify-start">
+          <img src="/surfshark.png" alt="Surfshark" className="h-6 w-6 rounded-full object-cover opacity-60" />
+          <span className="text-white/30 text-xs">In collaboration with Surfshark – Protect your online freedom</span>
+        </div>
+        <div className="flex items-center gap-3 flex-wrap justify-center sm:justify-end">
+          <span className="text-white/30 text-xs">Powered by Arduino hardware input</span>
+          <img src="/arduino.png" alt="Arduino" className="h-6 w-6 rounded-full object-cover opacity-60" />
+        </div>
       </div>
     </div>
   );

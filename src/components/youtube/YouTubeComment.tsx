@@ -64,7 +64,7 @@ export const YouTubeComment = ({
     <div
       ref={containerRef}
       className={cn(
-        "flex gap-3 py-3 px-2 rounded-lg cursor-pointer transition-all duration-300 group",
+        "flex gap-3 py-3 px-2 rounded-lg cursor-pointer transition-all duration-300 group min-h-[60px]",
         mode === 'setup' && "hover:bg-yt-hover",
         mode === 'setup' && isToggled && "bg-yt-red/20 border border-yt-red/50",
         mode === 'playing' && "hover:bg-yt-hover",
@@ -80,14 +80,14 @@ export const YouTubeComment = ({
           "w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-medium",
           `bg-gradient-to-br`,
           comment.id.includes('0') ? 'from-red-500 to-pink-500' :
-          comment.id.includes('1') ? 'from-blue-500 to-cyan-500' :
-          comment.id.includes('2') ? 'from-green-500 to-emerald-500' :
-          comment.id.includes('3') ? 'from-purple-500 to-violet-500' :
-          comment.id.includes('4') ? 'from-orange-500 to-amber-500' :
-          comment.id.includes('5') ? 'from-indigo-500 to-blue-500' :
-          comment.id.includes('6') ? 'from-pink-500 to-rose-500' :
-          comment.id.includes('7') ? 'from-teal-500 to-cyan-500' :
-          'from-gray-500 to-slate-500'
+            comment.id.includes('1') ? 'from-blue-500 to-cyan-500' :
+              comment.id.includes('2') ? 'from-green-500 to-emerald-500' :
+                comment.id.includes('3') ? 'from-purple-500 to-violet-500' :
+                  comment.id.includes('4') ? 'from-orange-500 to-amber-500' :
+                    comment.id.includes('5') ? 'from-indigo-500 to-blue-500' :
+                      comment.id.includes('6') ? 'from-pink-500 to-rose-500' :
+                        comment.id.includes('7') ? 'from-teal-500 to-cyan-500' :
+                          'from-gray-500 to-slate-500'
         )}>
           {comment.username.slice(0, 1).toUpperCase()}
         </div>
@@ -98,14 +98,14 @@ export const YouTubeComment = ({
         <div className="flex items-center gap-2 mb-0.5">
           <span className="text-[13px] font-medium text-yt-text-primary">@{comment.username}</span>
           <span className="text-xs text-yt-text-secondary">{comment.timestamp}</span>
-          
+
           {/* Setup mode badge */}
           {mode === 'setup' && isToggled && (
             <span className="text-[10px] px-2 py-0.5 bg-yt-red text-white rounded-full font-medium">
               🤖 BOT
             </span>
           )}
-          
+
           {/* Reveal mode badge */}
           {mode === 'reveal' && (
             <span className={cn(
@@ -116,11 +116,11 @@ export const YouTubeComment = ({
             </span>
           )}
         </div>
-        
+
         <p className="text-sm text-yt-text-primary leading-relaxed whitespace-pre-line">
           {comment.text}
         </p>
-        
+
         {/* Actions */}
         <div className="flex items-center gap-4 mt-2">
           <div className="flex items-center gap-1">

@@ -4,9 +4,27 @@ import { Search } from 'lucide-react';
 const dimmedColor = '#787878';
 
 const whoToFollow = [
-  { name: 'Tech News Daily', handle: '@technewsdaily', avatar: 'https://i.pravatar.cc/100?img=1' },
-  { name: 'Science Facts', handle: '@sciencefacts', avatar: 'https://i.pravatar.cc/100?img=2' },
-  { name: 'World Updates', handle: '@worldupdates', avatar: 'https://i.pravatar.cc/100?img=3' },
+  {
+    name: 'Surfshark',
+    handle: '@Surfshark',
+    bio: 'Fast, secure VPN for online privacy',
+    avatar: '/surfshark.png',
+    accentColor: '#1DA1F2',
+  },
+  {
+    name: 'Arduino',
+    handle: '@arduino',
+    bio: 'Open-source electronics & IoT',
+    avatar: '/arduino.png',
+    accentColor: '#00979D',
+  },
+  {
+    name: 'Malmö University',
+    handle: '@malmouniversity',
+    bio: 'Innovation & research in Malmö',
+    avatar: '/malmo-university.png',
+    accentColor: '#D32F2F',
+  },
 ];
 
 export const TwitterRightSidebar = () => {
@@ -26,30 +44,37 @@ export const TwitterRightSidebar = () => {
         </div>
       </div>
 
-      {/* Who to follow - all dimmed */}
+      {/* Who to follow */}
       <div className="bg-tw-bg-secondary rounded-2xl">
-        <h2 className="text-xl font-bold p-4" style={{ color: dimmedColor }}>Who to follow</h2>
+        <h2 className="text-xl font-bold p-4 text-white">Who to follow</h2>
         {whoToFollow.map((user, i) => (
-          <div key={i} className="px-4 py-3 cursor-not-allowed flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full" style={{ backgroundColor: dimmedColor }} />
+          <div key={i} className="px-4 py-3 flex items-center gap-3 hover:bg-white/5 transition-colors cursor-default">
+            {/* Avatar */}
+            <img
+              src={user.avatar}
+              alt={user.name}
+              className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+              style={{ border: `2px solid ${user.accentColor}30` }}
+            />
+            {/* Info */}
             <div className="flex-1 min-w-0">
-              <p className="font-bold truncate" style={{ color: dimmedColor }}>{user.name}</p>
-              <p className="text-sm truncate" style={{ color: dimmedColor }}>{user.handle}</p>
+              <p className="font-bold truncate text-white/90 text-sm">{user.name}</p>
+              <p className="text-xs truncate text-white/50">{user.handle}</p>
+              <p className="text-xs truncate text-white/40 mt-0.5">{user.bio}</p>
             </div>
-            <button 
-              className="px-4 py-1.5 font-bold rounded-full text-sm cursor-not-allowed"
-              style={{ backgroundColor: dimmedColor, color: '#1a1a1a' }}
+            {/* Follow button — dimmed/decorative */}
+            <button
+              className="px-3 py-1 font-bold rounded-full text-xs border cursor-not-allowed flex-shrink-0"
+              style={{ borderColor: dimmedColor, color: dimmedColor }}
+              disabled
             >
               Follow
             </button>
           </div>
         ))}
-        <button 
-          className="w-full p-4 text-left rounded-b-2xl cursor-not-allowed"
-          style={{ color: dimmedColor }}
-        >
-          Show more
-        </button>
+        <div className="px-4 pb-3 pt-1">
+          <p className="text-xs text-white/20 italic">Recommended accounts</p>
+        </div>
       </div>
     </aside>
   );

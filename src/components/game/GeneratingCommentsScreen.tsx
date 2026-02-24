@@ -13,7 +13,7 @@ const platformColors = {
 };
 
 const platformNames = {
-  youtube: 'RoboTube',
+  youtube: 'Robotube',
   twitter: 'Botter',
   whatsapp: 'Botsapp',
 };

@@ -18,14 +18,21 @@ interface TwitterLayoutProps {
 
 export const TwitterLayout = ({ children, scoreboardProps }: TwitterLayoutProps) => {
   return (
-    <div className="min-h-screen bg-tw-bg-primary">
+    <div className="min-h-screen bg-tw-bg-primary w-full">
       {/* Header with scoreboard */}
       <TwitterHeader scoreboardProps={scoreboardProps} />
-      
-      <div className="max-w-[1400px] mx-auto flex pt-14">
-        <TwitterSidebar />
+
+      <div className="w-full mx-auto flex flex-col pt-14">
+        {/* Hide sidebars for Portrait Kiosk to focus on Feed */}
+        <div className="hidden">
+          <TwitterSidebar />
+        </div>
+
         {children}
-        <TwitterRightSidebar />
+
+        <div className="hidden">
+          <TwitterRightSidebar />
+        </div>
       </div>
     </div>
   );

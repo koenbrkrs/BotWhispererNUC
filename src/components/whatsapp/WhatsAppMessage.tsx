@@ -51,7 +51,7 @@ export const WhatsAppMessage = ({
   return (
     <div
       ref={containerRef}
-      className={`flex gap-2 group max-w-[85%] ${mode === 'playing' && !wasGuessed ? 'cursor-pointer' : ''}`}
+      className={`flex gap-2 group max-w-[85%] min-h-[60px] items-start ${mode === 'playing' && !wasGuessed ? 'cursor-pointer' : ''}`}
       onClick={mode === 'playing' && !wasGuessed ? onClick : undefined}
     >
       {/* Avatar */}
@@ -63,9 +63,8 @@ export const WhatsAppMessage = ({
 
       {/* Message Bubble */}
       <div
-        className={`relative rounded-lg px-3 py-2 shadow-sm transition-all duration-200 ${bubbleClass} ${
-          mode === 'playing' && !wasGuessed ? 'hover:bg-wa-bg-hover group-hover:shadow-md' : ''
-        }`}
+        className={`relative rounded-lg px-3 py-2 shadow-sm transition-all duration-200 ${bubbleClass} ${mode === 'playing' && !wasGuessed ? 'hover:bg-wa-bg-hover group-hover:shadow-md' : ''
+          }`}
       >
         {/* Sender Name */}
         <div className="flex items-center gap-2 mb-1">
@@ -98,7 +97,7 @@ export const WhatsAppMessage = ({
           className="absolute top-0 -left-2 w-0 h-0"
           style={{
             borderTop: '8px solid transparent',
-            borderRight: isRevealed && isBot 
+            borderRight: isRevealed && isBot
               ? '8px solid rgba(37, 211, 102, 0.2)'
               : wasGuessed && wasCorrect
                 ? '8px solid rgba(34, 197, 94, 0.2)'

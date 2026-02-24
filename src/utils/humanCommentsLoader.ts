@@ -1,6 +1,8 @@
 // Utility to load human comments from Google Sheet CSV
+// Implements a Network → localStorage → Hardcoded fallback strategy.
 
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/10gVYuXHB1-IHJu2z9YEMh8sBIez0gIcgmaT1lQyXp4A/export?format=csv';
+const LOCAL_STORAGE_KEY = 'cached_human_comments';
 
 // Column mapping (0-indexed)
 const COLUMN_MAP: Record<string, Record<string, number>> = {
@@ -26,7 +28,16 @@ const COLUMN_MAP: Record<string, Record<string, number>> = {
   },
 };
 
-// Cache for CSV data
+// Emergency hardcoded fallback – used only when network AND localStorage both fail
+const HARDCODED_HUMAN_COMMENTS: string[] = [
+  "Interesting take. I'm not sure I fully agree, but it's worth discussing.",
+  "Can someone explain the other side? I feel like I'm missing something.",
+  "Honestly this is more nuanced than people make it seem.",
+  "I changed my mind on this recently after reading more about it.",
+  "Not gonna lie, I just want everyone to chill about this topic 😅",
+];
+
+// In-memory cache for the current session
 let csvCache: string[][] | null = null;
 
 const parseCSV = (csvText: string): string[][] => {
@@ -35,10 +46,10 @@ const parseCSV = (csvText: string): string[][] => {
     const result: string[] = [];
     let current = '';
     let inQuotes = false;
-    
+
     for (let i = 0; i < line.length; i++) {
       const char = line[i];
-      
+
       if (char === '"') {
         if (inQuotes && line[i + 1] === '"') {
           current += '"';
@@ -58,23 +69,94 @@ const parseCSV = (csvText: string): string[][] => {
   });
 };
 
+/**
+ * Saves parsed CSV data to localStorage so it can be used offline.
+ */
+const saveToLocalStorage = (data: string[][]): void => {
+  try {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+    console.log('Human comments cached to localStorage');
+  } catch (err) {
+    console.warn('Failed to save human comments to localStorage', err);
+  }
+};
+
+/**
+ * Attempts to load previously cached CSV data from localStorage.
+ * Returns null if nothing is cached or parsing fails.
+ */
+const loadFromLocalStorage = (): string[][] | null => {
+  try {
+    const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as string[][];
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      return parsed;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+};
+
+/**
+ * Builds a minimal fake CSV grid from the hardcoded fallback comments
+ * so the rest of the pipeline (column-based extraction) still works.
+ * Every topic/platform column gets the same set of comments.
+ */
+const buildFallbackGrid = (): string[][] => {
+  // header row (unused but keeps index alignment)
+  const header = Array(13).fill('');
+  const rows = HARDCODED_HUMAN_COMMENTS.map(comment => {
+    // Fill every column (1-12) with the same comment
+    const row = Array(13).fill('');
+    for (let col = 1; col <= 12; col++) {
+      row[col] = comment;
+    }
+    return row;
+  });
+  return [header, ...rows];
+};
+
 export const fetchHumanComments = async (): Promise<string[][]> => {
+  // 1. Return in-memory cache if available
   if (csvCache) {
-    console.log('Using cached CSV data');
+    console.log('Using in-memory cached CSV data');
     return csvCache;
   }
 
-  console.log('Fetching human comments from Google Sheet...');
-  const response = await fetch(CSV_URL);
-  
-  if (!response.ok) {
-    throw new Error(`Failed to fetch CSV: ${response.statusText}`);
+  // 2. Try fetching from the network
+  try {
+    console.log('Fetching human comments from Google Sheet...');
+    const response = await fetch(CSV_URL);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const csvText = await response.text();
+    csvCache = parseCSV(csvText);
+    console.log(`Loaded ${csvCache.length} rows from Google Sheet`);
+
+    // Persist to localStorage for offline use
+    saveToLocalStorage(csvCache);
+
+    return csvCache;
+  } catch (networkError) {
+    console.warn('Network failed. Attempting to load from local cache...', networkError);
   }
 
-  const csvText = await response.text();
-  csvCache = parseCSV(csvText);
-  console.log(`Loaded ${csvCache.length} rows from CSV`);
-  
+  // 3. Fall back to localStorage
+  const cached = loadFromLocalStorage();
+  if (cached) {
+    console.log(`Loaded ${cached.length} rows from localStorage cache`);
+    csvCache = cached;
+    return csvCache;
+  }
+
+  // 4. Emergency hardcoded fallback (first-time user with no internet)
+  console.warn('No local cache found. Using hardcoded fallback human comments.');
+  csvCache = buildFallbackGrid();
   return csvCache;
 };
 
@@ -84,11 +166,16 @@ export const getHumanCommentsForLevel = async (
   count: number = 10
 ): Promise<string[]> => {
   const csvData = await fetchHumanComments();
-  
+
   const columnIndex = COLUMN_MAP[topic]?.[platform];
   if (columnIndex === undefined) {
-    console.warn(`No column mapping for topic "${topic}" and platform "${platform}"`);
-    return [];
+    console.warn(`No column mapping for topic "${topic}" / platform "${platform}" — using hardcoded fallback`);
+    // Return hardcoded fallback comments rather than an empty array
+    const fallback = [...HARDCODED_HUMAN_COMMENTS];
+    while (fallback.length < count) {
+      fallback.push(...HARDCODED_HUMAN_COMMENTS);
+    }
+    return fallback.slice(0, count);
   }
 
   // Get all non-empty values from the column (skip header row 0)
@@ -109,7 +196,7 @@ export const getHumanCommentsForLevel = async (
   // Randomly pick 'count' unique comments (with repetition if needed)
   const selected: string[] = [];
   const shuffled = [...comments].sort(() => Math.random() - 0.5);
-  
+
   for (let i = 0; i < count; i++) {
     if (i < shuffled.length) {
       selected.push(shuffled[i]);

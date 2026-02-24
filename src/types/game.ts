@@ -17,6 +17,7 @@ export interface BotConfig {
   emojiAmount: number; // 0 = None, 100 = Heavy
   topic: string;
   stance: string;
+  platform?: 'youtube' | 'twitter' | 'whatsapp';
 }
 
 export interface ScoreEntry {

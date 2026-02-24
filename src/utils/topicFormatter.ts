@@ -1,6 +1,6 @@
 // Utility to format topics into broader questions/statements for each platform
 
-export const formatTopicForRoboTube = (topic: string): string => {
+export const formatTopicForRobotube = (topic: string): string => {
   const topicQuestions: Record<string, string> = {
     "Women's rights": "Should Women Have Equal Rights in All Areas of Society?",
     "Data centers": "Are Data Centers Destroying Our Environment?",
@@ -13,7 +13,7 @@ export const formatTopicForRoboTube = (topic: string): string => {
 export const formatTopicForBotter = (topic: string): string => {
   const topicStatements: Record<string, string> = {
     "Women's rights": "Women deserve equal pay, reproductive rights, and freedom from discrimination. The fight for women's rights is far from over. Where do you stand?",
-    "Data centers": "Data centers are consuming massive amounts of energy and water while powering our digital lives. Should tech companies be forced to go green?",
+    "Data centres": "Data centres are consuming massive amounts of energy and water while powering our digital lives. Should tech companies be forced to go green?",
     "Immigration": "Immigration shapes our economy, culture, and communities. Should we open our borders or build higher walls? The debate continues...",
     "Pineapple on pizza": "Pineapple on pizza: a delicious sweet-savory combination or an absolute crime against Italian cuisine? This is the hill people are willing to die on."
   };
@@ -23,7 +23,7 @@ export const formatTopicForBotter = (topic: string): string => {
 export const formatTopicForBotsapp = (topic: string): string => {
   const topicNames: Record<string, string> = {
     "Women's rights": "Women's Rights Discussion 👩‍⚖️",
-    "Data centers": "Tech & Environment Debate 🌍",
+    "Data centres": "Tech & Environment Debate 🌍",
     "Immigration": "Immigration Policy Talk 🌐",
     "Pineapple on pizza": "Pizza Toppings War 🍕🍍"
   };
@@ -31,6 +31,6 @@ export const formatTopicForBotsapp = (topic: string): string => {
 };
 
 // Keep old names as aliases for backward compatibility
-export const formatTopicForYouTube = formatTopicForRoboTube;
+export const formatTopicForYouTube = formatTopicForRobotube;
 export const formatTopicForTwitter = formatTopicForBotter;
 export const formatTopicForWhatsApp = formatTopicForBotsapp;

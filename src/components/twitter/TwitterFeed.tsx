@@ -30,7 +30,7 @@ export const TwitterFeed = ({
   const visibleComments = comments.filter(c => !removedIds.has(c.id));
 
   return (
-    <main className="flex-1 border-x border-tw-border min-h-screen max-w-[600px]">
+    <main className="flex-1 min-h-screen w-full max-w-none border-x-0 border-tw-border">
       {/* Header */}
       <div className="sticky top-14 z-30 bg-tw-bg-primary/80 backdrop-blur-md border-b border-tw-border">
         <div className="flex items-center justify-between px-4 h-14">

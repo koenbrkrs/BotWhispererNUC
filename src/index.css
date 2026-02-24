@@ -12,7 +12,8 @@
     --yt-bg-tertiary: 48 48 48;
     --yt-text-primary: 241 241 241;
     --yt-text-secondary: 170 170 170;
-    --yt-red: 234 66 55; /* #EA4237 */
+    --yt-red: 234 66 55;
+    /* #EA4237 */
     --yt-blue: 62 166 255;
     --yt-border: 48 48 48;
     --yt-hover: 48 48 48;
@@ -23,7 +24,8 @@
     --tw-bg-hover: 30 32 36;
     --tw-text-primary: 231 233 234;
     --tw-text-secondary: 113 118 123;
-    --tw-blue: 24 107 224; /* #186BE0 */
+    --tw-blue: 24 107 224;
+    /* #186BE0 */
     --tw-blue-hover: 20 90 190;
     --tw-border: 47 51 54;
 
@@ -39,21 +41,27 @@
     --wa-bubble-outgoing: 0 92 75;
     --wa-text-primary: 233 237 239;
     --wa-text-secondary: 134 150 160;
-    --wa-green: 0 255 65; /* #00FF41 */
+    --wa-green: 0 255 65;
+    /* #00FF41 */
     --wa-green-dark: 0 168 132;
     --wa-border: 38 50 56;
 
     /* Retro Theme Colors - Updated */
-    --retro-red: 234 66 55; /* #EA4237 */
-    --retro-green: 0 255 65; /* #00FF41 */
-    --retro-blue: 24 107 224; /* #186BE0 */
-    --retro-muted: 120 120 120; /* #787878 */
+    --retro-red: 234 66 55;
+    /* #EA4237 */
+    --retro-green: 0 255 65;
+    /* #00FF41 */
+    --retro-blue: 24 107 224;
+    /* #186BE0 */
+    --retro-muted: 120 120 120;
+    /* #787878 */
     --retro-button: 245 240 230;
     --retro-button-text: 30 30 30;
     --retro-button-hover: 220 215 205;
 
     /* Dimmed colors for non-interactive elements */
-    --game-dimmed: 120 120 120; /* #787878 */
+    --game-dimmed: 120 120 120;
+    /* #787878 */
 
     --background: 0 0% 6%;
     --foreground: 0 0% 95%;
@@ -78,28 +86,18 @@
     --ring: 0 100% 50%;
     --radius: 0.75rem;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
-  
+
   body {
     @apply bg-yt-bg-primary text-yt-text-primary;
     font-family: 'Roboto', Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
-  }
-
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: rgb(var(--yt-bg-tertiary));
-    border-radius: 4px;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
   }
 }
 
@@ -113,14 +111,31 @@
   }
 
   @keyframes timer-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
+
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0.7;
+    }
   }
 
   @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
+
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+
+    25% {
+      transform: translateX(-5px);
+    }
+
+    75% {
+      transform: translateX(5px);
+    }
   }
 
   .animate-shake {
@@ -128,8 +143,15 @@
   }
 
   @keyframes fade-in {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .animate-fade-in {
@@ -137,11 +159,14 @@
   }
 
   @keyframes urgency-pulse {
-    0%, 100% { 
+
+    0%,
+    100% {
       opacity: 0.4;
       transform: scale(1);
     }
-    50% { 
+
+    50% {
       opacity: 0.8;
       transform: scale(1.002);
     }

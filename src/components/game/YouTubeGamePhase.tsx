@@ -19,14 +19,14 @@ interface YouTubeGamePhaseProps {
   onLevelSelect?: (level: 1 | 2 | 3) => void;
 }
 
-export const YouTubeGamePhase = ({ 
-  topic, 
-  comments, 
+export const YouTubeGamePhase = ({
+  topic,
+  comments,
   lives,
-  onComplete, 
+  onComplete,
   onLiveLost,
   onGameOver,
-  onLevelSelect 
+  onLevelSelect
 }: YouTubeGamePhaseProps) => {
   const [guesses, setGuesses] = useState<Record<string, PlayerGuess>>({});
   const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());
@@ -70,7 +70,7 @@ export const YouTubeGamePhase = ({
     if (guesses[comment.id] || removedIds.has(comment.id)) return;
 
     const isCorrect = comment.isBotted;
-    
+
     setGuesses(prev => ({
       ...prev,
       [comment.id]: { guessed: true, correct: isCorrect }
@@ -102,10 +102,10 @@ export const YouTubeGamePhase = ({
   return (
     <YouTubeLayout scoreboardProps={scoreboardProps}>
       {/* Urgency Border */}
-      <UrgencyBorder 
-        timeRemaining={timeRemaining} 
-        currentLevel={1} 
-        isRunning={isRunning} 
+      <UrgencyBorder
+        timeRemaining={timeRemaining}
+        currentLevel={1}
+        isRunning={isRunning}
       />
 
       {/* Progress Bar */}
@@ -117,13 +117,13 @@ export const YouTubeGamePhase = ({
         onLevelSelect={onLevelSelect}
       />
 
-      <div className="max-w-[1800px] mx-auto px-4 lg:px-6 py-6 pt-20">
-        <div className="flex flex-col xl:flex-row gap-6">
-          {/* Main content */}
-          <div className="flex-1 min-w-0">
+      <div className="w-full h-full px-4 lg:px-6 py-6 pt-[8vh] flex flex-col">
+        <div className="flex flex-col gap-6 w-full max-w-none mx-auto">
+          {/* Main content - stacked vertically */}
+          <div className="w-full flex-col space-y-4">
             <VideoPlayer />
             <VideoInfo title={videoTitle} />
-            
+
             <CommentsSection
               comments={comments}
               mode="playing"
@@ -135,11 +135,13 @@ export const YouTubeGamePhase = ({
               incorrectGuesses={incorrectGuesses}
             />
           </div>
-          
-          {/* Sidebar */}
-          <aside className="w-full xl:w-[402px] flex-shrink-0">
+
+          {/* Sidebar - moved to bottom for portrait flow */}
+          <aside className="w-full mt-8 pb-20">
             <h3 className="text-sm font-medium text-yt-text-primary mb-4">Up next</h3>
-            <RecommendedVideos />
+            <div className="grid grid-cols-1 gap-4">
+              <RecommendedVideos />
+            </div>
           </aside>
         </div>
       </div>

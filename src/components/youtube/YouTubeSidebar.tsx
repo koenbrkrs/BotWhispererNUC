@@ -106,7 +106,7 @@ export const YouTubeSidebar = ({ isOpen }: YouTubeSidebarProps) => {
           <p>Contact us Creators</p>
           <p>Advertise Developers</p>
           <p className="mt-4">Terms Privacy Policy & Safety</p>
-          <p>How RoboTube works</p>
+          <p>How Robotube works</p>
           <p>Test new features</p>
           <p className="mt-4">© 2025 RoboTube LLC</p>
         </div>
